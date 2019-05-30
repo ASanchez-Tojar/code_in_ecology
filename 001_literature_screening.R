@@ -1,6 +1,9 @@
 ###################################################################
-# Authors: 
-# Alfredo Sanchez-Tojar
+# Author:
+#
+# Alfredo Sanchez-Tojar (alfredo.tojar@gmail.com)
+#   Affiliation: Dept. Evolutionary Biology, Bielefeld University, Germany
+#   Profile: https://scholar.google.de/citations?user=Sh-Rjq8AAAAJ&hl=de
 
 # Script first created on the 30th of May 2019
 
