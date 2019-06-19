@@ -15,7 +15,7 @@
 # imported into rayyan for title-and-abstract screening. This data 
 # is part of the following study:
 
-# Antica Culina, Ilona van den Berga, Simon Evans, Alfredo S?nchez-T?jar. 
+# Antica Culina, Ilona van den Berga, Simon Evans, Alfredo Sanchez-Tojar. 
 # Low availability of code in ecology: a call for urgent action.
 
 
@@ -41,7 +41,7 @@ rm(list=ls())
 ##############################################################
 
 # importing .bib file
-db.refs <- read_bibliography("screening_process/random_200_2018_2019.bib")
+db.refs <- read_bibliography("screening_process/title-and-abstract_screening/random_200_2018_2019.bib")
 
 
 # reducing fields to the fields required by rayyan
@@ -59,7 +59,7 @@ db.refs.red <- db.refs[,reducing.fields]
 # choose only the fields needed for creating a .csv file importable by: https://rayyan.qcri.org
 
 # example of a valid .csv file
-rayyan.example <- read.table("screening_process/rayyan_csv_example.csv",header=TRUE,sep=",")
+rayyan.example <- read.table("screening_process/title-and-abstract_screening/rayyan_csv_example.csv",header=TRUE,sep=",")
 
 
 # standardizing fields according to rayyan.example despite that some fields are missing from the wos output
@@ -109,10 +109,10 @@ for(i in 1:nrow(db.refs.rayyan)){
 ##############################################################
 
 write.csv(db.refs.rayyan,
-          "screening_process/random_200_2018_2019_rayyan.csv",row.names=FALSE)
+          "screening_process/title-and-abstract_screening/random_200_2018_2019_rayyan.csv",row.names=FALSE)
 
 #remember to manually remove the quotes for the column names only in the .csv file
 
-sink("screening_process/screening_process_Rpackages_session.txt")
+sink("screening_process/title-and-abstract_screening/screening_process_Rpackages_session.txt")
 sessionInfo()
 sink()
