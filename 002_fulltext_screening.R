@@ -92,7 +92,7 @@ db.refs.fulltext$Publication_year <- db.refs.included$year
 db.refs.fulltext$Authors <- str_remove(as.character(db.refs.fulltext$Authors), 
                                        regex(" month = ...."))
 
-# cleaning the Title variable
+# cleaning the Title variable # did it work?
 db.refs.fulltext$Title <- str_remove(as.character(db.refs.fulltext$Title), 
                                      regex("\\{"))
 
