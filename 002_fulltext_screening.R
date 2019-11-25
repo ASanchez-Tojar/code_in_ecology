@@ -124,6 +124,41 @@ write.xlsx(db.refs.fulltext[,c("fulltextID",names(data.extraction.template))],
            append=FALSE, showNA=TRUE, password=NULL)
 
 
+################################################################
+# Choosing 15% of references from 2016-2017 for double-checking
+################################################################
+
+references.2016.dataset <- read.xlsx("data/Code_data_table_2017_v2.xlsx",
+                                     colNames=T,sheet = 1)
+
+# subsetting those references that passed the title and abstract screening
+references.2016.dataset.subset <- references.2016.dataset[references.2016.dataset$Excluded.initial.screening=="no",]
+
+# randomly choosing 15% of the references for independent data extraction
+
+# first, restart row names to make sure they go from 1 to nrow()
+rownames(references.2016.dataset.subset) <- NULL
+
+# randomly select 15% of the references
+set.seed(123)
+random.selection <- sample(x=1:nrow(references.2016.dataset.subset),
+                           size=round(0.15*nrow(references.2016.dataset.subset),0))
+
+references.2016.to.redo <- references.2016.dataset.subset[sort(random.selection),]
+
+# removing data to create a template
+references.2016.to.redo[,c(8:24)] <- ""
+
+write.xlsx(references.2016.to.redo[,c(1:24)],
+           "screening_process/fulltext_screening/Code_data_table_2017_double-checking_subset.xlsx",
+           sheetName="Sheet1",col.names=TRUE, row.names=F,
+           append=FALSE, showNA=TRUE, password=NULL)
+
+
+##############################################################
+# Saving dataset for double-extraction
+##############################################################
+
 # saving session information with all packages versions for reproducibility purposes
 sink("screening_process/fulltext_screening/fulltext_screening_process_Rpackages_session.txt")
 sessionInfo()
