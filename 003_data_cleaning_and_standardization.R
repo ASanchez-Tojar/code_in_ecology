@@ -88,6 +88,39 @@ names(db.full)
 # Journal
 table(db.full$Journal)
 
+# # exporting journal names for finding updated impact factor
+# write.csv(unique(db.full[,c("Journal","Impact_Factor")]),"data/journal_if.csv",
+#           row.names=FALSE)
+
+# visualizing where the NA's are
+db.full[is.na(db.full$Journal),]
+
+
+###############################
+# Publication_year
+table(db.full$Publication_year)
+
+# there is a typo in one year of publication: 2916 should be 2016
+db.full[!(is.na(db.full$Publication_year)) & db.full$Publication_year==2916,"Publication_year"] <- "2016"
+
+# furthermore there are three NA's that need fixing
+db.full[is.na(db.full$Publication_year),]
+
+
+###############################
+# Impact_Factor
+table(db.full$Impact_Factor)
+
+# we are gonna update the impact factor, and use the 5-year impact factor 
+# of each journal as per today according to web of science
+impact.factor <- read.table("data/journal_if_WoS_20200206.csv",header=T,sep=",")
+
+# merging this new impact factor, but before, we delete the old one 
+# becuase there are 3 values with impact factor but without a journal
+db.full <- db.full[ , -which(names(db.full) %in% c("Impact_Factor"))]
+db.full <- merge(db.full,impact.factor,by="Journal",all.x=TRUE)
+table(db.full$Impact_Factor)
+
 
 ###############################
 # Excluded.abstract.screening
@@ -109,14 +142,22 @@ table(db.full$Excluded.abstract.screening) # everything looks good now
 # statistical.analysis.or/and.simulations
 
 # first name needs to be modified to make it easy to handle
-names(db.full)[8] <- "statistical.analysis.and.or.simulations"
+names(db.full)[7] <- "statistical.analysis.and.or.simulations"
 
 table(db.full$statistical.analysis.and.or.simulations)
+
+# for those named as "yes, implement a model" we are going to add this information
+# to the variable "additional.comment.on.analysis" and rename them as "yes, simulation"
+
+db.full[!(is.na(db.full$statistical.analysis.and.or.simulations)) & 
+          db.full$statistical.analysis.and.or.simulations=="yes, implement a model",]
 
 # standardizing: singular and plural
 db.full$statistical.analysis.and.or.simulations <- recode(db.full$statistical.analysis.and.or.simulations,
                                                           "yes, simulations" = "yes, simulation",
                                                           "yes, statistical and simulations" = "yes, statistical and simulation",
+                                                          "yes, implement a model" = "yes, simulation",
+                                                          "yes, methodological and statistical" = "yes, statistical and methodological",
                                                           .default = levels(db.full$statistical.analysis.and.or.simulations))
 
 
@@ -124,6 +165,15 @@ db.full$statistical.analysis.and.or.simulations <- recode(db.full$statistical.an
 db.full$statistical.analysis.and.or.simulations.2 <- as.factor(ifelse(as.character(db.full$statistical.analysis.and.or.simulations)=="no",
                                                                       "no",
                                                                       "yes"))
+
+table(db.full$statistical.analysis.and.or.simulations.2 )
+
+# checking consistency in data collection. For those papers that we reviewed,
+# if statistical.analysis.and.or.simulations.2 == "no", there should not be data collected 
+summary(db.full[db.full$Excluded.abstract.screening=="no" &
+                  db.full$statistical.analysis.and.or.simulations.2 == "no",]) #all good!
+
+
 ###############################
 # bioinformatic.analysis
 table(db.full$bioinformatic.analysis)
@@ -137,7 +187,7 @@ table(db.full$Stat_analysis_software)
 db.full$Stat_analysis_software <- str_replace_all(db.full$Stat_analysis_software, ",", " and")
 
 # from: https://rstudio-pubs-static.s3.amazonaws.com/408658_512da947714740b99253228f084a08a9.html
-# making all first letters capital
+# making all first letters capital to keep everything tidy and consistent
 CapStr <- function(y) {
   c <- strsplit(y, " ")[[1]]
   paste(toupper(substring(c, 1,1)), substring(c, 2),
@@ -147,13 +197,10 @@ CapStr <- function(y) {
 db.full$Stat_analysis_software <- sapply(as.character(db.full$Stat_analysis_software), CapStr)
 
 # reformatting NA's
-db.full$Stat_analysis_software <- recode(db.full$Stat_analysis_software,
-                                         "NANA" = "NA",
-                                         .default = levels(db.full$Stat_analysis_software))
+db.full$Stat_analysis_software <- as.factor(db.full$Stat_analysis_software)
+levels(db.full$Stat_analysis_software)[levels(db.full$Stat_analysis_software)=='NANA'] <- NA
 
-levels(db.full$Stat_analysis_software)[levels(db.full$Stat_analysis_software)=='NA'] <- NA
-
-
+# a bunch of manual formatting for standardization
 db.full$Stat_analysis_software <- str_replace_all(db.full$Stat_analysis_software, "And", "and")
 db.full$Stat_analysis_software <- str_replace_all(db.full$Stat_analysis_software, "Stata", "STATA")
 db.full$Stat_analysis_software <- str_replace_all(db.full$Stat_analysis_software, "SigmaPlot for Windows", "Sigmaplot")
@@ -164,10 +211,14 @@ db.full$Stat_analysis_software <- str_replace_all(db.full$Stat_analysis_software
 db.full$Stat_analysis_software <- str_replace_all(db.full$Stat_analysis_software, "Matlab", "MATLAB")
 db.full$Stat_analysis_software <- str_replace_all(db.full$Stat_analysis_software, "MATLAB and Maybe Other", "MATLAB")
 db.full$Stat_analysis_software <- str_replace_all(db.full$Stat_analysis_software, "Minitab and Other?", "Minitab")
-db.full$Stat_analysis_software <- str_replace_all(db.full$Stat_analysis_software, "Minitab?", "Minitab")
+db.full$Stat_analysis_software <- str_replace_all(db.full$Stat_analysis_software, "Minitab\\?", "Minitab")
 db.full$Stat_analysis_software <- str_replace_all(db.full$Stat_analysis_software, "Not Mentioned But Seems To Be Python", "Not Stated")
 db.full$Stat_analysis_software <- str_replace_all(db.full$Stat_analysis_software, "GraphPad Prism", "Prism")
 db.full$Stat_analysis_software <- str_replace_all(db.full$Stat_analysis_software,"\\Ibm\\X+","IBM ILOG CPLEX")
+
+db.full$Stat_analysis_software <- factor(db.full$Stat_analysis_software)
+
+table(db.full$Stat_analysis_software)
 
 
 ###############################
@@ -183,11 +234,32 @@ db.full$CodePublished.2 <- recode(db.full$CodePublished,
                                   "some" = "yes",
                                   .default = levels(db.full$CodePublished))
 
+db.full$CodePublished <- factor(db.full$CodePublished)
+db.full$CodePublished.2 <- factor(db.full$CodePublished.2)
 table(db.full$CodePublished.2)
 
 
+
+# checking consistency in data collection. For those papers with some code published,
+# there should be data collected about the code 
+summary(db.full[!(is.na(db.full$CodePublished.2)) & 
+                  db.full$CodePublished.2=="yes",]) # found a couple of inconsistencies that will be fixed
+
+# db.full[!(is.na(db.full$CodePublished.2)) & 
+#           db.full$CodePublished.2=="yes" &
+#           is.na(db.full$bioinformatic.analysis),]
+
+# this is an interesting case where code is provided only as an R package, 
+# but not the code to reproduce the simulation, that is why we call it
+# CodePublished="no", and have to make CodeMentioned and Location_CodeMentioned as NA
+db.full[!(is.na(db.full$CodePublished.2)) & 
+          db.full$CodePublished.2=="no" & 
+          !(is.na(db.full$CodeMentioned)),
+        c("CodeMentioned","Location_CodeMentioned")] <- NA
+
+
 ###############################
-# CodePublished
+# CodeMentioned
 table(db.full$CodeMentioned)
 
 # standardizing
@@ -195,7 +267,14 @@ db.full$CodeMentioned <- recode(db.full$CodeMentioned,
                                 "yes, script and code" = "yes, code and script",
                                 "yes, but only as \"simulation is available in\"" = "yes, simulation",
                                 "none" = "no",
-                                .default = levels(db.full$CodePublished))
+                                .default = levels(db.full$CodeMentioned))
+
+# creating a new binary variable to know whether code was mentioned in the text or not
+db.full$CodeMentioned.2 <- as.factor(ifelse(as.character(db.full$CodeMentioned)=="no",
+                                            "no",
+                                            "yes"))
+
+table(db.full$CodeMentioned.2)
 
 
 ###############################
@@ -256,6 +335,7 @@ table(db.full$FreeSoftware.2)
 # DataUsed
 table(db.full$DataUsed)
 
+
 ###############################
 # DataShared
 table(db.full$DataShared)
@@ -298,10 +378,7 @@ write.csv(db.full,"data/code_availability_full_and_clean.csv",
           row.names=FALSE)
 
 
-
 # checking papers for which only simulations where run to see if CodePublished DataUsed and DataShared agree
 db.full[!(is.na(db.full$statistical.analysis.and.or.simulations)) & 
           db.full$statistical.analysis.and.or.simulations=="yes, simulation",
         c("fulltextID","Authors","Publication_year","CodePublished","DataUsed","DataShared","Second_screener")]
-
-
