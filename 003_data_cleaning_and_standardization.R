@@ -106,6 +106,13 @@ db.full[!(is.na(db.full$Publication_year)) & db.full$Publication_year==2916,"Pub
 # furthermore there are three NA's that need fixing
 db.full[is.na(db.full$Publication_year),]
 
+# we are creating a variable with two levels to properly label the two 
+# period of times that we sampled (is not 4 years, but rather two time points)
+db.full$Publication_year.2 <- ifelse(db.full$Publication_year < 2017,
+                                     "2015-2016",
+                                     "2018-2019")
+
+db.full$Publication_year.2 <- as.factor(db.full$Publication_year.2)
 
 ###############################
 # Impact_Factor
