@@ -39,12 +39,12 @@ rm(list=ls())
 # Importing data
 ##############################################################
 
-# importing data for 2016-2017
-db.2016.17 <- read.xlsx("data/Data_Feb_2020_V4.xlsx",
+# importing data for 2015-2016
+db.2015.16 <- read.xlsx("data/Data_Feb_2020_V6.xlsx",
                         colNames = T,sheet = 1)
 
-# importing data for 2016-2017
-db.2018.19 <- read.xlsx("data/Data_Feb_2020_V4.xlsx",
+# importing data for 2018-2019
+db.2018.19 <- read.xlsx("data/Data_Feb_2020_V6.xlsx",
                         colNames = T ,sheet = 2)
 
 
@@ -53,23 +53,23 @@ db.2018.19 <- read.xlsx("data/Data_Feb_2020_V4.xlsx",
 ##############################################################
 
 # are the variable names the same?
-setdiff(names(db.2016.17),names(db.2018.19))
-setdiff(names(db.2018.19),names(db.2016.17))
+setdiff(names(db.2015.16),names(db.2018.19))
+setdiff(names(db.2018.19),names(db.2015.16))
 
 # changing name of a variable to standardize across datasets
-db.2016.17 <- rename(db.2016.17, BreafDescription = "BreafDescription/Howto")
+db.2015.16 <- rename(db.2015.16, BreafDescription = "BreafDescription/Howto")
 
 # are the variable names the same? Yes
-setdiff(names(db.2016.17),names(db.2018.19))
-setdiff(names(db.2018.19),names(db.2016.17))
+setdiff(names(db.2015.16),names(db.2018.19))
+setdiff(names(db.2018.19),names(db.2015.16))
 
 # putting both databases together
-db.full <- rbind(db.2016.17,db.2018.19)
+db.full <- rbind(db.2015.16,db.2018.19)
 
 # exploring database
 summary(db.full)
 
-# transforming variables to their right type
+# transforming some variables to factor
 cols.factor <- c("fulltextID", "Journal", "Excluded.abstract.screening", "statistical.analysis.or/and.simulations",
                  "bioinformatic.analysis", "Stat_analysis_software", "CodePublished", "CodeMentioned", "Location_CodeMentioned",
                  "LocationShared", "Repository", "FreeSoftware", "DataUsed", "DataShared", "BreafDescription",
@@ -80,13 +80,14 @@ db.full[cols.factor] <- lapply(db.full[cols.factor], factor)  ## as.factor() cou
 summary(db.full)
 names(db.full)
 
+
 #############################################################################################
 # exploring each variable and cleaning and standardizing if necessary
 #############################################################################################
 
 ###############################
 # Journal
-table(db.full$Journal)
+sort(table(db.full$Journal))
 sum(table(db.full$Journal))
 
 # # exporting journal names for finding updated impact factor
@@ -134,10 +135,10 @@ sum(table(db.full$Impact_Factor))
 # Excluded.abstract.screening
 table(db.full$Excluded.abstract.screening)
 
-# found some yes that need to be standardized
+# found some yes's that need to be standardized
 yes.conditionals <- db.full[!(db.full$Excluded.abstract.screening %in% c("yes","no")),"Excluded.abstract.screening"]
 
-# extracting the exclusion reasons to add them to the additional.comment.on.analysis variable
+# extracting the exclusion reasons of those yes's to add them to the additional.comment.on.analysis variable
 db.full[!(db.full$Excluded.abstract.screening %in% c("yes","no")),"additional.comment.on.analysis"] <- str_extract(yes.conditionals, "[:alpha:]+$")
 db.full[!(db.full$Excluded.abstract.screening %in% c("yes","no")),"Excluded.abstract.screening"] <- "yes"
 
@@ -156,8 +157,8 @@ table(db.full$statistical.analysis.and.or.simulations)
 
 # for those named as "yes, implement a model" we are going rename them as "yes, simulation" 
 # (but the information will still be available in the additional.comment.on.analysis)
-db.full[!(is.na(db.full$statistical.analysis.and.or.simulations)) & 
-          db.full$statistical.analysis.and.or.simulations=="yes, implement a model",]
+# db.full[!(is.na(db.full$statistical.analysis.and.or.simulations)) & 
+#           db.full$statistical.analysis.and.or.simulations=="yes, implement a model",]
 
 # standardizing: singular and plural
 db.full$statistical.analysis.and.or.simulations <- recode(db.full$statistical.analysis.and.or.simulations,
@@ -170,7 +171,7 @@ db.full$statistical.analysis.and.or.simulations <- recode(db.full$statistical.an
 table(db.full$statistical.analysis.and.or.simulations)
 
 # creating a new variable with simply yes or no to make subsetting easier, also, becuase some papers are dificult to label (e.g. simulation vs. model),
-# and we are not interesting in labelling them per se, just to know if they provide some stats or simulations for which code could be available.
+# and we are not interesting in labelling them per se, just to know if they provide some stats or simulations for which analytical code could be available.
 db.full$statistical.analysis.and.or.simulations.2 <- as.factor(ifelse(as.character(db.full$statistical.analysis.and.or.simulations)=="no",
                                                                       "no",
                                                                       "yes"))
@@ -192,11 +193,11 @@ table(db.full$bioinformatic.analysis)
 # Stat_analysis_software
 table(db.full$Stat_analysis_software)
 
-# standardizing terminology
+# standardizing terminology: first, substituting , by and
 db.full$Stat_analysis_software <- str_replace_all(db.full$Stat_analysis_software, ",", " and")
 
-# from: https://rstudio-pubs-static.s3.amazonaws.com/408658_512da947714740b99253228f084a08a9.html
-# making all first letters capital to keep everything tidy and consistent
+# function obtained from: https://rstudio-pubs-static.s3.amazonaws.com/408658_512da947714740b99253228f084a08a9.html
+# this function makes the first letter of a word capital to keep everything tidy and consistent
 CapStr <- function(y) {
   c <- strsplit(y, " ")[[1]]
   paste(toupper(substring(c, 1,1)), substring(c, 2),
@@ -212,7 +213,7 @@ levels(db.full$Stat_analysis_software)[levels(db.full$Stat_analysis_software)=='
 # a bunch of manual formatting for standardization
 db.full$Stat_analysis_software <- str_replace_all(db.full$Stat_analysis_software, "And", "and")
 db.full$Stat_analysis_software <- str_replace_all(db.full$Stat_analysis_software, "Stata", "STATA")
-db.full$Stat_analysis_software <- str_replace_all(db.full$Stat_analysis_software, "SigmaPlot for Windows", "Sigmaplot")
+db.full$Stat_analysis_software <- str_replace_all(db.full$Stat_analysis_software, "SigmaPlot For Windows", "Sigmaplot")
 db.full$Stat_analysis_software <- str_replace_all(db.full$Stat_analysis_software, "OpenBUGS", "Openbugs")
 db.full$Stat_analysis_software <- str_replace_all(db.full$Stat_analysis_software, "C Compiler", "C")
 db.full$Stat_analysis_software <- str_replace_all(db.full$Stat_analysis_software, "Hyperniche Version 2.0 and Other", "Hyperniche")
@@ -224,11 +225,20 @@ db.full$Stat_analysis_software <- str_replace_all(db.full$Stat_analysis_software
 db.full$Stat_analysis_software <- str_replace_all(db.full$Stat_analysis_software, "Not Mentioned But Seems To Be Python", "Not Stated")
 db.full$Stat_analysis_software <- str_replace_all(db.full$Stat_analysis_software, "GraphPad Prism", "Prism")
 db.full$Stat_analysis_software <- str_replace_all(db.full$Stat_analysis_software,"\\Ibm\\X+","IBM ILOG CPLEX")
+db.full$Stat_analysis_software <- str_replace_all(db.full$Stat_analysis_software,"R and Bug","R and Bugs")
 
 db.full$Stat_analysis_software <- factor(db.full$Stat_analysis_software)
 
 table(db.full$Stat_analysis_software)
 
+# checking software and freeness
+db.full[order(db.full$Stat_analysis_software),c("Stat_analysis_software","FreeSoftware")] #all good
+
+# counting R used
+# R used together with other software
+table(str_detect(db.full$Stat_analysis_software, "R "))
+# R used by itself
+nrow(db.full[db.full$Stat_analysis_software=="R" & !(is.na(db.full$Stat_analysis_software)),])
 
 ###############################
 # CodePublished
@@ -237,10 +247,10 @@ table(db.full$CodePublished)
 # convert all to lower case
 db.full$CodePublished <- str_to_lower(db.full$CodePublished, locale = "en")
 
-# creating new variable where embargoed is counted as yes, and partially counted as yes too
+# creating new variable where embargoed is counted as yes
 db.full$CodePublished.2 <- recode(db.full$CodePublished,
                                   "yes, but embargoed" = "yes",
-                                  "some" = "yes",
+                                  #"some" = "yes",
                                   .default = levels(db.full$CodePublished))
 
 db.full$CodePublished <- factor(db.full$CodePublished)
@@ -250,7 +260,7 @@ table(db.full$CodePublished.2)
 # checking consistency in data collection. For those papers with some code published,
 # there should be data collected about the code 
 summary(db.full[!(is.na(db.full$CodePublished.2)) & 
-                  db.full$CodePublished.2=="yes",]) # found a couple of inconsistencies that will be fixed
+                  db.full$CodePublished.2=="yes",]) # found a couple of inconsistencies that are now be fixed
 
 # db.full[!(is.na(db.full$CodePublished.2)) & 
 #           db.full$CodePublished.2=="yes" &
@@ -260,10 +270,38 @@ summary(db.full[!(is.na(db.full$CodePublished.2)) &
 # but not the code to reproduce the simulation, that is why we call it
 # CodePublished="no", and we are going to make CodeMentioned and Location_CodeMentioned as NA
 # to keep things simple
-db.full[!(is.na(db.full$CodePublished.2)) & 
+db.full[!(is.na(db.full$CodePublished.3)) & 
           db.full$CodePublished.2=="no" & 
           !(is.na(db.full$CodeMentioned)),
         c("CodeMentioned","Location_CodeMentioned")] <- NA
+
+# creating new variable where some is counted simply as yes
+db.full$CodePublished.3 <- recode(db.full$CodePublished.2,
+                                  "some" = "yes",
+                                  .default = levels(db.full$CodePublished.2))
+
+db.full$CodePublished.3 <- factor(db.full$CodePublished.3)
+table(db.full$CodePublished.3)
+
+table(db.full[db.full$Publication_year.2=="2015-2016","CodePublished.2"])
+table(db.full[db.full$Publication_year.2=="2018-2019","CodePublished.2"])
+
+# doing some countings
+# number of journals covered each year
+db.full %>% group_by(Publication_year.2,Journal) %>% summarise(count = n_distinct(CodePublished.2)) %>% summarise(n = n())
+
+# counting number of articles per year per journal
+articles.per.journal <- as.data.frame(db.full %>% group_by(Journal) %>% summarise(n = n()))
+
+# number of journals covered each year
+code.published.per.journal <- as.data.frame(db.full %>% filter(CodePublished.2=="yes") %>% group_by(Journal) %>% summarise(total = n()))
+
+as.data.frame(cbind(as.character(articles.per.journal$Journal),as.integer(round((code.published.per.journal$total/articles.per.journal$n)*100,0))))
+
+# number of journals covered each year (at least some code)
+code.published.per.journal.some <- as.data.frame(db.full %>% filter(CodePublished.3=="yes") %>% group_by(Journal) %>% summarise(total = n()))
+
+as.data.frame(cbind(as.character(articles.per.journal$Journal),as.integer(round((code.published.per.journal.some$total/articles.per.journal$n)*100,0))))
 
 
 ###############################
@@ -289,6 +327,9 @@ table(db.full$CodeMentioned.2)
 # Location_CodeMentioned
 table(db.full$Location_CodeMentioned)
 
+table(db.full[db.full$Publication_year.2=="2015-2016","Location_CodeMentioned"])
+table(db.full[db.full$Publication_year.2=="2018-2019","Location_CodeMentioned"])
+
 
 ###############################
 # LocationShared
@@ -302,6 +343,8 @@ db.full$LocationShared.2 <- recode(db.full$LocationShared,
                                    .default = levels(db.full$LocationShared))
 
 table(db.full$LocationShared.2)
+table(db.full[db.full$Publication_year.2=="2015-2016","LocationShared.2"])
+table(db.full[db.full$Publication_year.2=="2018-2019","LocationShared.2"])
 
 
 ###############################
@@ -337,7 +380,8 @@ db.full$FreeSoftware.2 <- recode(db.full$FreeSoftware,
                                  .default = levels(db.full$FreeSoftware))
 
 table(db.full$FreeSoftware.2)
-table(db.full[db.full$CodePublished.2=="yes","FreeSoftware.2"])
+sum(table(db.full$FreeSoftware.2))# makes sense because there are 32 articles where software was not stated
+table(db.full[db.full$CodePublished.3=="yes" & !(is.na(db.full$CodePublished.3)),"FreeSoftware.2"]) #one article provides code, but does not state the software, and we could not figure it out
 
 
 ###############################
@@ -377,12 +421,6 @@ table(db.full$DataShared.3)
 # table(db.full[db.full$statistical.analysis.and.or.simulations.2=="yes" & !(is.na(db.full$statistical.analysis.and.or.simulations.2)),"DataShared.3"])
 # nrow(db.full[db.full$statistical.analysis.and.or.simulations.2=="yes" & !(is.na(db.full$statistical.analysis.and.or.simulations.2)) & is.na(db.full$DataShared.3),])
 # table(db.full[db.full$statistical.analysis.and.or.simulations.2=="yes" & !(is.na(db.full$statistical.analysis.and.or.simulations.2)) & is.na(db.full$DataShared.3),"DataUsed"])
-
-nrow(db.full[db.full$CodePublished.2=="yes" & db.full$DataShared.3=="yes" &
-               !(is.na(db.full$CodePublished.2)) & !(is.na(db.full$DataShared.3)),])
-
-nrow(db.full[db.full$CodePublished.2=="yes" & db.full$DataShared.3=="yes" & db.full$FreeSoftware.2=="yes" &
-               !(is.na(db.full$CodePublished.2)) & !(is.na(db.full$DataShared.3)) & !(is.na(db.full$FreeSoftware.2)),])
 
 
 ###############################
@@ -432,7 +470,7 @@ summary(db.full.doi)
 db.full.doi.reduced <- db.full.doi[,c("doi","Journal","Publication_year","Publication_year.2",
                                       "Excluded.abstract.screening","statistical.analysis.and.or.simulations.2",
                                       "bioinformatic.analysis","additional.comment.on.analysis",
-                                      "Stat_analysis_software","CodePublished","CodePublished.2","LinktoCode",
+                                      "Stat_analysis_software","CodePublished","CodePublished.2","CodePublished.3","LinktoCode",
                                       "BreafDescription","InlineComments",
                                       "CodeMentioned","CodeMentioned.2","LocationShared","LocationShared.2",
                                       "Repository","FreeSoftware","DataUsed","DataShared.2","DataShared.3",
