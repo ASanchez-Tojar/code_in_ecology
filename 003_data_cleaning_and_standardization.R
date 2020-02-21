@@ -11,8 +11,8 @@
 # Description of script and Instructions
 ###################################################################
 
-# This script is to import the sheets with data extracted from the
-# references include in a review for the following study:
+# This script is to import and clean the sheets with data extracted 
+# from the references included in a review for the following study:
 
 # Antica Culina, Ilona van den Berga, Simon Evans, Alfredo Sanchez-Tojar. 
 # Low availability of code in ecology: a call for urgent action.
@@ -74,9 +74,10 @@ cols.factor <- c("fulltextID", "Journal", "Excluded.abstract.screening", "statis
                  "bioinformatic.analysis", "Stat_analysis_software", "CodePublished", "CodeMentioned", "Location_CodeMentioned",
                  "LocationShared", "Repository", "FreeSoftware", "DataUsed", "DataShared", "BreafDescription",
                  "InlineComments")
-db.full[cols.factor] <- lapply(db.full[cols.factor], factor)  ## as.factor() could also be used
 
-# exploring database
+db.full[cols.factor] <- lapply(db.full[cols.factor], factor)
+
+# exploring the database further
 summary(db.full)
 names(db.full)
 
@@ -85,14 +86,11 @@ names(db.full)
 # exploring each variable and cleaning and standardizing if necessary
 #############################################################################################
 
+
 ###############################
 # Journal
 sort(table(db.full$Journal))
 sum(table(db.full$Journal))
-
-# # exporting journal names for finding updated impact factor
-# write.csv(unique(db.full[,c("Journal","Impact_Factor")]),"data/journal_if.csv",
-#           row.names=FALSE)
 
 # visualizing where the NA's are, if any: none, all fixed
 db.full[is.na(db.full$Journal),]
@@ -106,29 +104,13 @@ table(db.full$Publication_year)
 db.full[is.na(db.full$Publication_year),]
 
 # we are creating a variable with two levels to properly label the two 
-# period of times that we sampled (is not 4 years, but rather two time points)
+# period of times that we sampled (we did not concieved it as 4 years, but rather as 2 time points)
 db.full$Publication_year.2 <- ifelse(db.full$Publication_year < 2017,
                                      "2015-2016",
                                      "2018-2019")
 
 db.full$Publication_year.2 <- as.factor(db.full$Publication_year.2)
 table(db.full$Publication_year.2)
-
-
-###############################
-# Impact_Factor
-table(db.full$Impact_Factor)
-
-# we are gonna update the impact factor, and use the 5-year impact factor 
-# of each journal as per today according to web of science
-impact.factor <- read.table("data/journal_if_WoS_20200206.csv",header=T,sep=",")
-
-# merging this new impact factor, but before, we delete the old one 
-# becuase there are 3 values with impact factor but without a journal
-db.full <- db.full[ , -which(names(db.full) %in% c("Impact_Factor"))]
-db.full <- merge(db.full,impact.factor,by="Journal",all.x=TRUE)
-table(db.full$Impact_Factor)
-sum(table(db.full$Impact_Factor))
 
 
 ###############################
