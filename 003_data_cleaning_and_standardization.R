@@ -117,7 +117,7 @@ table(db.full$Publication_year.2)
 # Excluded.abstract.screening
 table(db.full$Excluded.abstract.screening)
 
-# found some yes's that need to be standardized
+# some yes's need to be standardized
 yes.conditionals <- db.full[!(db.full$Excluded.abstract.screening %in% c("yes","no")),"Excluded.abstract.screening"]
 
 # extracting the exclusion reasons of those yes's to add them to the additional.comment.on.analysis variable
@@ -132,17 +132,18 @@ table(db.full$Excluded.abstract.screening) # everything looks good now
 ###############################
 # statistical.analysis.or/and.simulations
 
-# first name needs to be modified to make it easy to handle
-names(db.full)[7] <- "statistical.analysis.and.or.simulations"
+# first name needs to be modified to make it easy to handle: get rid of the "/"
+names(db.full)[8] <- "statistical.analysis.and.or.simulations"
 
 table(db.full$statistical.analysis.and.or.simulations)
 
 # for those named as "yes, implement a model" we are going rename them as "yes, simulation" 
-# (but the information will still be available in the additional.comment.on.analysis)
-# db.full[!(is.na(db.full$statistical.analysis.and.or.simulations)) & 
+# (but the information will still be available in the additional.comment.on.analysis as seen 
+# in the following check)
+# db.full[!(is.na(db.full$statistical.analysis.and.or.simulations)) &
 #           db.full$statistical.analysis.and.or.simulations=="yes, implement a model",]
 
-# standardizing: singular and plural
+# standardizing
 db.full$statistical.analysis.and.or.simulations <- recode(db.full$statistical.analysis.and.or.simulations,
                                                           "yes, simulations" = "yes, simulation",
                                                           "yes, statistical and simulations" = "yes, statistical and simulation",
@@ -152,8 +153,10 @@ db.full$statistical.analysis.and.or.simulations <- recode(db.full$statistical.an
 
 table(db.full$statistical.analysis.and.or.simulations)
 
-# creating a new variable with simply yes or no to make subsetting easier, also, becuase some papers are dificult to label (e.g. simulation vs. model),
-# and we are not interesting in labelling them per se, just to know if they provide some stats or simulations for which analytical code could be available.
+# creating a new variable with simply yes or no to make subsetting easier, also, becuase some 
+# papers are dificult to label (e.g. simulation vs. model), and we are not interesting in strictly 
+# labelling them per se, just to know if they provide some stats or simulations for which analytical
+#code should hopefully be available.
 db.full$statistical.analysis.and.or.simulations.2 <- as.factor(ifelse(as.character(db.full$statistical.analysis.and.or.simulations)=="no",
                                                                       "no",
                                                                       "yes"))
@@ -162,12 +165,14 @@ table(db.full$statistical.analysis.and.or.simulations.2)
 
 # checking consistency in data collection. For those papers that we reviewed,
 # if statistical.analysis.and.or.simulations.2 == "no", there should not be data collected 
-summary(db.full[db.full$Excluded.abstract.screening=="no" &
-                  db.full$statistical.analysis.and.or.simulations.2 == "no",]) #all good!
+# summary(db.full[db.full$Excluded.abstract.screening=="no" &
+#                   db.full$statistical.analysis.and.or.simulations.2 == "no",]) #all good!
 
 
 ###############################
-# bioinformatic.analysis
+# bioinformatic.analysis: keep in mind that it was sometimes tricky to label some papers as
+# bioinformatic or no. We reviewed and discussed many cases among observers before final
+# decisions.
 table(db.full$bioinformatic.analysis)
 
 
@@ -213,14 +218,15 @@ db.full$Stat_analysis_software <- factor(db.full$Stat_analysis_software)
 
 table(db.full$Stat_analysis_software)
 
-# checking software and freeness
-db.full[order(db.full$Stat_analysis_software),c("Stat_analysis_software","FreeSoftware")] #all good
+# checking software and freeness consistency
+# db.full[order(db.full$Stat_analysis_software),c("Stat_analysis_software","FreeSoftware")] #all good
 
-# counting R used
-# R used together with other software
+# counting articles using R and other software
 table(str_detect(db.full$Stat_analysis_software, "R "))
-# R used by itself
+
+# counting articles using exclusively R
 nrow(db.full[db.full$Stat_analysis_software=="R" & !(is.na(db.full$Stat_analysis_software)),])
+
 
 ###############################
 # CodePublished
@@ -229,7 +235,7 @@ table(db.full$CodePublished)
 # convert all to lower case
 db.full$CodePublished <- str_to_lower(db.full$CodePublished, locale = "en")
 
-# creating new variable where embargoed is counted as yes
+# creating new variable where embargoed is counted as simply yes
 db.full$CodePublished.2 <- recode(db.full$CodePublished,
                                   "yes, but embargoed" = "yes",
                                   #"some" = "yes",
@@ -241,19 +247,18 @@ table(db.full$CodePublished.2)
 
 # checking consistency in data collection. For those papers with some code published,
 # there should be data collected about the code 
-summary(db.full[!(is.na(db.full$CodePublished.2)) & 
-                  db.full$CodePublished.2=="yes",]) # found a couple of inconsistencies that are now be fixed
+# summary(db.full[!(is.na(db.full$CodePublished.2)) & 
+#                   db.full$CodePublished.2=="yes",]) # found a couple of inconsistencies that are now be fixed
 
-# db.full[!(is.na(db.full$CodePublished.2)) & 
+# db.full[!(is.na(db.full$CodePublished.2)) &
 #           db.full$CodePublished.2=="yes" &
 #           is.na(db.full$bioinformatic.analysis),]
 
 # this is an interesting case where code is provided only as an R package, 
-# but not the code to reproduce the simulation, that is why we call it
-# CodePublished="no", and we are going to make CodeMentioned and Location_CodeMentioned as NA
-# to keep things simple
-db.full[!(is.na(db.full$CodePublished.3)) & 
-          db.full$CodePublished.2=="no" & 
+# but not the code to reproduce the simulation, so we have decided to call it
+# CodePublished="no", and we are going to make CodeMentioned and 
+# Location_CodeMentioned as NA to keep things simple
+db.full[db.full$CodePublished=="no" & 
           !(is.na(db.full$CodeMentioned)),
         c("CodeMentioned","Location_CodeMentioned")] <- NA
 
@@ -265,6 +270,7 @@ db.full$CodePublished.3 <- recode(db.full$CodePublished.2,
 db.full$CodePublished.3 <- factor(db.full$CodePublished.3)
 table(db.full$CodePublished.3)
 
+# some number checking
 table(db.full[db.full$Publication_year.2=="2015-2016","CodePublished.2"])
 table(db.full[db.full$Publication_year.2=="2018-2019","CodePublished.2"])
 
@@ -284,6 +290,7 @@ as.data.frame(cbind(as.character(articles.per.journal$Journal),as.integer(round(
 code.published.per.journal.some <- as.data.frame(db.full %>% filter(CodePublished.3=="yes") %>% group_by(Journal) %>% summarise(total = n()))
 
 as.data.frame(cbind(as.character(articles.per.journal$Journal),as.integer(round((code.published.per.journal.some$total/articles.per.journal$n)*100,0))))
+summary(as.numeric(as.character(as.data.frame(cbind(as.character(articles.per.journal$Journal),as.integer(round((code.published.per.journal.some$total/articles.per.journal$n)*100,0))))$V2)))
 
 
 ###############################
@@ -333,6 +340,7 @@ table(db.full[db.full$Publication_year.2=="2018-2019","LocationShared.2"])
 # Repository
 table(db.full$Repository)
 
+# some manual editing to standardize
 db.full$Repository <- str_replace_all(db.full$Repository, "dryad", "Dryad")
 db.full$Repository <- str_replace_all(db.full$Repository, "FigShare", "Figshare")
 db.full$Repository <- str_replace_all(db.full$Repository, "Github", "GitHub")
@@ -393,6 +401,9 @@ db.full$DataShared.2 <- recode(db.full$DataShared,
                                .default = levels(db.full$DataShared))
 
 table(db.full$DataShared.2)
+
+# checking number of papers with all code and all data
+#summary(db.full[(db.full$CodePublished.2=="yes" & !(is.na(db.full$CodePublished.2))) & (db.full$DataShared.2=="yes" | is.na(db.full$DataShared.2)),])
 
 # creating new binary variable
 db.full$DataShared.3 <- recode(db.full$DataShared.2,
@@ -463,9 +474,7 @@ write.csv(db.full.doi.reduced,"data/code_availability_full_and_clean.csv",
           row.names=FALSE)
 
 
-#
-#
-#
+# Some extra checks:
 # double checking consistency for those studies with simulations and code, data should be at least partially shared (depends, though, think about it) (if the code provided generates the data)
 # db.full[db.full$statistical.analysis.and.or.simulations=="yes, simulation" & 
 #           !(is.na(db.full$statistical.analysis.and.or.simulations)) & 
