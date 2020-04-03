@@ -208,6 +208,25 @@ code.hosted.repository.2018.19 <- as.numeric(table(data.full[data.full$Publicati
 # number of articles using only the supplements to host their data
 code.hosted.supplements <- as.numeric(table(data.full$LocationShared.2)["supplementary file"])
 
+# number of articles using exclusively free software
+free.software <- as.numeric(table(data.full$FreeSoftware)["yes"])
+
+# number of articles using R in combination with other software
+R.and.others <- as.numeric(table(str_detect(data.full$Stat_analysis_software, "R "))["TRUE"])
+
+# number of articles using only R
+R.only <- nrow(data.full[data.full$Stat_analysis_software=="R" & !(is.na(data.full$Stat_analysis_software)),])
+
+# number of articles reporting the software used
+eligible.articles.code.reporting.software.used <- as.numeric(data.full %>% 
+                                       filter(!(is.na(statistical.analysis.and.or.simulations.2))) %>% 
+                                       summarise(eligible_articles = sum(statistical.analysis.and.or.simulations.2 == "yes" & Stat_analysis_software != "Not Stated")))
+
+# number of articles reporting the software used
+eligible.articles.code.not.reporting.software.used <- as.numeric(data.full %>% 
+                                       filter(!(is.na(statistical.analysis.and.or.simulations.2))) %>% 
+                                       summarise(eligible_articles = sum(statistical.analysis.and.or.simulations.2 == "yes" & Stat_analysis_software == "Not Stated")))
+
 # creating vectors to build the data frame with
 
 # vector with a name for each percentage
@@ -234,7 +253,10 @@ all.names <- c("articles sharing at least some code",
                "articles sharing at least some code and hosting it in a repository in 2018/2019",
                "articles with the potential to be computationally reproducible",
                "articles with the potential to be computationally reproducible in 2015/2016",
-               "articles with the potential to be computationally reproducible in 2018/2019")
+               "articles with the potential to be computationally reproducible in 2018/2019",
+               "articles using free (non-proprietary) software",
+               "articles using R",
+               "articles not reporting the software used")
 
 # vector with all percentages
 all.percentages <- round(
@@ -261,7 +283,10 @@ all.percentages <- round(
     (code.hosted.repository.2018.19/at.least.some.code.year$code_published[2])*100,
     (seemingly.all.code.and.data/eligible.articles.code)*100,
     (seemingly.all.code.and.data.year$code_and_data_published[1]/eligible.articles.code.year$eligible_articles[1])*100,
-    (seemingly.all.code.and.data.year$code_and_data_published[2]/eligible.articles.code.year$eligible_articles[2])*100),0)
+    (seemingly.all.code.and.data.year$code_and_data_published[2]/eligible.articles.code.year$eligible_articles[2])*100,
+    (free.software/eligible.articles.code.reporting.software.used)*100,
+    ((R.and.others+R.only)/eligible.articles.code.reporting.software.used)*100,
+    (eligible.articles.code.not.reporting.software.used/eligible.articles.code)*100),0)
 
 # vector with all numerators for calculating the percentage
 all.numerators <- c("#eligible articles sharing at least some code",
@@ -287,7 +312,10 @@ all.numerators <- c("#eligible articles sharing at least some code",
                     "#eligible articles sharing at least some code and hosting it in a repository in 2018/2019",
                     "#eligible articles sharing seemingly all code and data (if any used)",
                     "#eligible articles with the potential to be computationally reproducible in 2015/2016",
-                    "#eligible articles with the potential to be computationally reproducible in 2018/2019")
+                    "#eligible articles with the potential to be computationally reproducible in 2018/2019",
+                    "#eligible articles using free (non-proprietary) software",
+                    "#eligible articles using R alone or together with other software",
+                    "#eligible articles not reporting the software used")
 
 # vector with all denominators for calculating the percentage
 all.denominators <- c("#eligible articles",
@@ -313,7 +341,10 @@ all.denominators <- c("#eligible articles",
                       "#eligible articles sharing at least some code in 2018/2019",
                       "#eligible articles",
                       "#eligible articles in 2015/2016",
-                      "#eligible articles in 2018/2019")
+                      "#eligible articles in 2018/2019",
+                      "#eligible articles reporting software used",
+                      "#eligible articles reporting software used",
+                      "#eligible articles")
 
 # putting together tableS2 and renaming columns
 tableS2 <- as.data.frame(cbind(all.names,all.percentages,all.numerators,all.denominators))
