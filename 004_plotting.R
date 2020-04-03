@@ -146,9 +146,9 @@ none.data.published <- db.full %>%
 
 
 # calculating number of eligible articles (after title-and-abstract and full-text screening)
-total.data <- db.full %>% 
-  filter(!(is.na(Publication_year.2)), !(is.na(DataShared.2)), statistical.analysis.and.or.simulations.2=="yes") %>% 
-  group_by(Publication_year.2) %>% 
+total.data <- db.full %>%
+  filter(!(is.na(Publication_year.2)), !(is.na(DataShared.2)), statistical.analysis.and.or.simulations.2=="yes") %>%
+  group_by(Publication_year.2) %>%
   summarise(n = n())
 
 
