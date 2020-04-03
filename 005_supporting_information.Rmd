@@ -42,7 +42,7 @@ journal.policies <- read.xlsx("data/Updated_Table_Mislan_2020_v2.xlsx",colNames=
 
 ### 1.1 - State of analytical code in ecology
 
-We randomly sampled articles published in ecological journals for which code-sharing has been either mandatory or encouraged since June 2015 at the latest. Sampling within these journals maximizes the number of codes available for quality assessment (see below), and also helps us to understand where other ecological journals will likely be in the near future (Stodden et al. 2013). The sample of journals was obtained from Mislan et al. (2016), who identified `r table(journal.policies$Require.computer.code.with.publication_2015)['Yes']` out of `r nrow(journal.policies)` (`r round((table(journal.policies$Require.computer.code.with.publication_2015)['Yes']/nrow(journal.policies))*100,0)`%) ecological journals with mandatory or encouraging code-sharing policies in place since at least the 1st of June 2015 (Table S1). We sampled all the articles published in these `r table(journal.policies$Require.computer.code.with.publication_2015)['Yes']` journals using the Web of Science Core Collection (search performed at the Netherlands Institute of Ecology) for two distinct temporal periods: 1st of June 2015 to 9th of December 2016 (2015/16 dataset, N= 4,366 records), and 1st of January 2018 to 21st of May 2019 (2018/19 dataset, N=4,291). A random sample of 200 articles from each period was then selected using the function “sample” in R v. 3.3.2 (R Core Team 2013).
+We randomly sampled articles published in ecological journals for which code-sharing has been either mandatory or encouraged since June 2015 at the latest. Sampling within these journals maximizes the number of codes available for quality assessment (see below), and also helps us to understand where other ecological journals will likely be in the near future (Stodden et al. 2013). The sample of journals was obtained from Mislan et al. (2016), who identified `r table(journal.policies$Require.computer.code.with.publication_2015)['Yes']` out of `r nrow(journal.policies)` (`r round((table(journal.policies$Require.computer.code.with.publication_2015)['Yes']/nrow(journal.policies))*100,0)`%) ecological journals with mandatory or encouraging code-sharing policies in place since at least the 1st of June 2015 (Table S3). We sampled all the articles published in these `r table(journal.policies$Require.computer.code.with.publication_2015)['Yes']` journals using the Web of Science Core Collection (search performed at the Netherlands Institute of Ecology) for two distinct temporal periods: 1st of June 2015 to 9th of December 2016 (2015/16 dataset, N= 4,366 records), and 1st of January 2018 to 21st of May 2019 (2018/19 dataset, N=4,291). A random sample of 200 articles from each period was then selected using the function “sample” in R v. 3.3.2 (R Core Team 2013).
 
 For each of the 400 articles, we determined whether the article was relevant to our survey by screening all titles and abstracts using the software Rayyan (Ouzzani et al. 2016). Reviews, opinion pieces, and commentaries were excluded, whereas articles that conducted some kind of statistical analysis and/or simulations were kept for further screening. All the articles were double screened at this stage (2015/16 by AC and IvB; and 2018/19 by AST and SE). As a result, `r table(data.full[data.full$Publication_year.2=='2015-2016','Excluded.abstract.screening'])["no"]` of the `r nrow(data.full[data.full$Publication_year.2=='2015-2016',])` articles in 2015/16 dataset, and `r table(data.full[data.full$Publication_year.2=='2018-2019','Excluded.abstract.screening'])["no"]` of the `r nrow(data.full[data.full$Publication_year.2=='2018-2019',])` articles in 2018/19 dataset were kept for further evaluation. The full list of these articles, with the results of the screening is provided (see file `data/code_availability_full_and_clean.csv`).
 
@@ -76,7 +76,7 @@ To ensure data reliability, we randomly selected and double-checked data extract
 
 ### 1.2 - Journals' code-sharing policies
 
-We explored if the number of ecological journals with code-sharing policies has increased since 2015, when only `r table(journal.policies$Require.computer.code.with.publication_2015)['Yes']` out of `r nrow(journal.policies)` (`r round((table(journal.policies$Require.computer.code.with.publication_2015)['Yes']/nrow(journal.policies))*100,0)`%) had code-sharing policies (Mislan et al. 2016). In March 2020 we investigated the existence of code-sharing policies for all the `r nrow(journal.policies)` ecological journals identified by Mislan et al. (2016; Table S1). Two observers (AC and AST) carefully read the 'Authors Instructions' and 'Editorial Policies' of each journal (i.e. each journal was scored twice, once per observer). If none of these sections explicitly mentioned data and/or code, we also checked other sections of the journal's website, whenever possible. Unclear cases were discussed together. Based on the information collected, we scored the journals' code-sharing policies as: ‘encouraged’ (publication of the code is explicitly encouraged, but not required), ‘mandatory’ (code must be published together with the article), or 'encouraged/mandatory' (when the wording made it difficult to judge if code publication is encouraged or required). If a journal did not explicitly encouraged code-sharing (i.e. even when it mentioned research artifacts, but not 'code' or 'script' explicitly: `r nrow(journal.policies[journal.policies$Require.computer.code.with.publication_2020=="No" & !(is.na(journal.policies$Require.computer.code.with.publication_2020)) & !(is.na(journal.policies$Comment_on_2020)),])` out of `r nrow(journal.policies[!(is.na(journal.policies$Require.computer.code.with.publication_2020)),])`, `r round((nrow(journal.policies[journal.policies$Require.computer.code.with.publication_2020=="No" & !(is.na(journal.policies$Require.computer.code.with.publication_2020)) & !(is.na(journal.policies$Comment_on_2020)),])/nrow(journal.policies[!(is.na(journal.policies$Require.computer.code.with.publication_2020)),]))*100,0)`%), the journal's code-sharing policy was scored as ‘none’ (i.e. code is not mentioned; see comments in file `data/Updated_Table_Mislan_2020_v2.xlsx`).
+We explored if the number of ecological journals with code-sharing policies has increased since 2015, when only `r table(journal.policies$Require.computer.code.with.publication_2015)['Yes']` out of `r nrow(journal.policies)` (`r round((table(journal.policies$Require.computer.code.with.publication_2015)['Yes']/nrow(journal.policies))*100,0)`%) had code-sharing policies (Mislan et al. 2016). In March 2020 we investigated the existence of code-sharing policies for all the `r nrow(journal.policies)` ecological journals identified by Mislan et al. (2016; Table S3). Two observers (AC and AST) carefully read the 'Authors Instructions' and 'Editorial Policies' of each journal (i.e. each journal was scored twice, once per observer). If none of these sections explicitly mentioned data and/or code, we also checked other sections of the journal's website, whenever possible. Unclear cases were discussed together. Based on the information collected, we scored the journals' code-sharing policies as: ‘encouraged’ (publication of the code is explicitly encouraged, but not required), ‘mandatory’ (code must be published together with the article), or 'encouraged/mandatory' (when the wording made it difficult to judge if code publication is encouraged or required). If a journal did not explicitly encouraged code-sharing (i.e. even when it mentioned research artifacts, but not 'code' or 'script' explicitly: `r nrow(journal.policies[journal.policies$Require.computer.code.with.publication_2020=="No" & !(is.na(journal.policies$Require.computer.code.with.publication_2020)) & !(is.na(journal.policies$Comment_on_2020)),])` out of `r nrow(journal.policies[!(is.na(journal.policies$Require.computer.code.with.publication_2020)),])`, `r round((nrow(journal.policies[journal.policies$Require.computer.code.with.publication_2020=="No" & !(is.na(journal.policies$Require.computer.code.with.publication_2020)) & !(is.na(journal.policies$Comment_on_2020)),])/nrow(journal.policies[!(is.na(journal.policies$Require.computer.code.with.publication_2020)),]))*100,0)`%), the journal's code-sharing policy was scored as ‘none’ (i.e. code is not mentioned; see comments in file `data/Updated_Table_Mislan_2020_v2.xlsx`).
 
 **Table S1**. List of `r nrow(journal.policies)` ecological journals and their code-sharing policies in June 2015 (Mislan et al. 2016) and in March 2020 (this study).
 ```{r}
@@ -91,9 +91,122 @@ journal.policies %>% select(Full.Journal.Title,Require.computer.code.with.public
 
 ### 2.1 - Percentages calculations
 
+```{r}
+
+# number of eligible articles
+eligible.articles.code <- as.numeric(data.full %>% 
+                                       filter(!(is.na(statistical.analysis.and.or.simulations.2))) %>% 
+                                       summarise(eligible_articles = sum(statistical.analysis.and.or.simulations.2 == "yes")))
+
+# number of eligible articles
+eligible.articles.code.year <- data.full %>% 
+  filter(!(is.na(statistical.analysis.and.or.simulations.2))) %>% 
+  group_by(Publication_year.2) %>% 
+  summarise(eligible_articles = sum(statistical.analysis.and.or.simulations.2 == "yes"))
+
+# number of articles that published at least some code
+at.least.some.code <- as.numeric(data.full %>% 
+                                   filter(!(is.na(CodePublished.3))) %>% 
+                                   summarise(code_published = sum(CodePublished.3 == "yes")))
+
+# number of articles per year that published at least some code
+at.least.some.code.year <- data.full %>% 
+  filter(!(is.na(CodePublished.3))) %>% 
+  group_by(Publication_year.2) %>% 
+  summarise(code_published = sum(CodePublished.3 == "yes"))
+
+# number of articles that published seemingly all code
+seemingly.all.code <- as.numeric(data.full %>% 
+                                   filter(!(is.na(CodePublished.2))) %>% 
+                                   summarise(code_published = sum(CodePublished.2 == "yes")))
+
+# number of articles that published only somecode
+only.some.code <- as.numeric(data.full %>% 
+                               filter(!(is.na(CodePublished.2))) %>% 
+                               summarise(code_published = sum(CodePublished.2 == "some")))
+
+# number of eligible articles that used data
+eligible.articles.data <- as.numeric(data.full %>% 
+                                       filter(!(is.na(statistical.analysis.and.or.simulations.2)) & !(is.na(DataUsed))) %>% 
+                                       summarise(eligible_articles = sum(statistical.analysis.and.or.simulations.2 == "yes" & DataUsed == "yes")))
+
+# number of articles that published at least some data
+at.least.some.data <- as.numeric(data.full %>% 
+                                   filter(!(is.na(DataShared.3))) %>% 
+                                   summarise(data_published = sum(DataShared.3 == "yes")))
+
+# number of journals with some type of code-sharing policy in 2015
+journals.with.policy.2015 <- as.numeric(table(journal.policies$Require.computer.code.with.publication_2015)['Yes'])
+
+# number of journals reviewed in 2015
+journals.2015 <- nrow(journal.policies)
+
+# number of journals with some type of code-sharing policy in 2020
+journals.with.policy.2020 <- nrow(journal.policies[!(is.na(journal.policies$Require.computer.code.with.publication_2020)) & 
+                                                     journal.policies$Require.computer.code.with.publication_2020!="No",])
+
+# number of journals reviewed in 2015 that were still active in 2020
+journals.2020 <- nrow(journal.policies[!(is.na(journal.policies$Require.computer.code.with.publication_2020)),])
+
+
+# creating vectors to build the data frame with
+
+# vector with a name for each percentage
+all.names <- c("articles sharing at least some code",
+               "articles sharing at least some data",
+               "journals with code-sharing policies in 2015",
+               "journals with code-sharing policies in 2020",
+               "articles sharing seemingly all code",
+               "articles sharing only some code",
+               "articles sharing at least some code in 2015",
+               "articles sharing at least some code in 2020")
+
+# vector with all percentages
+all.percentages <- round(
+  c((at.least.some.code/eligible.articles.code)*100,
+    (at.least.some.data/eligible.articles.data)*100,
+    (journals.with.policy.2015/journals.2015)*100,
+    (journals.with.policy.2020/journals.2020)*100,
+    (seemingly.all.code/eligible.articles.code)*100,
+    (only.some.code/eligible.articles.code)*100,
+    (at.least.some.code.year$code_published[1]/eligible.articles.code.year$eligible_articles[1])*100,
+    (at.least.some.code.year$code_published[2]/eligible.articles.code.year$eligible_articles[2])*100),0)
+
+# vector with all numerators for calculating the percentage
+all.numerators <- c("#eligible articles with at least some code",
+                    "#eligible articles with at least some data",
+                    "#journals with code-sharing policies in 2015",
+                    "#journals with code-sharing policies in 2020",
+                    "#eligible articles with seemingly all code",
+                    "#eligible articles with only some code",
+                    "#eligible articles with at least some code in 2015",
+                    "#eligible articles with at least some code in 2020")
+
+# vector with all denominators for calculating the percentage
+all.denominators <- c("#eligible articles",
+                      "#eligible articles that used data",
+                      "#journals reviewed in 2015",
+                      "#journals reviewed and still existing in 2020",
+                      "#eligible articles",
+                      "#eligible articles",
+                      "#eligible articles in 2015",
+                      "#eligible articles in 2020")
+
+# putting together tableS2 and renaming columns
+tableS2 <- as.data.frame(cbind(all.names,all.percentages,all.numerators,all.denominators))
+names(tableS2) <- c("Name","%","Numerator","Denominator")
+```
+
+**Table S2**. List of all percentages calculated and presented in the main manuscript, and how they were calculated to avoid any misunderstanding. Percentages sorted by the order of appearance in the main manuscript (including the abstract).
+
+```{r}
+# printing Table S2
+tableS2 %>% kable("html") %>% kable_styling() %>% scroll_box(width = "100%", height = "500px")
+```
+
 ### 2.2 - Journals' code-sharing compliance
 
-**Table S2**. List of `r table(journal.policies$Require.computer.code.with.publication_2015)['Yes']` ecological journals reviewed in this study and their code-sharing policies (updated in March 2020), number of articles reviewed, number of articles sharing at least some code, and the percentage of articles sharing at least some code.
+**Table S3**. List of `r table(journal.policies$Require.computer.code.with.publication_2015)['Yes']` ecological journals reviewed in this study and their code-sharing policies (updated in March 2020), number of articles reviewed, number of articles sharing at least some code, and the percentage of articles sharing at least some code.
 ```{r}
 # number of journals covered each year
 number.journals.covered <- as.data.frame(data.full %>% group_by(Publication_year.2,Journal) %>% summarise(count = n_distinct(CodePublished.2)) %>% summarise(n = n()))
@@ -114,7 +227,7 @@ journal.info <- read.table("data/journals_info_v2.csv",header=T,sep=",")
 # merging journal info to percentages
 full.journal.info <- merge(full.journal,journal.info)
 
-# printing table S2
+# printing table S3
 full.journal.info %>% select(abbreviations,Policy,total,codepublished,percentage) %>% rename(Journal=abbreviations,'Code-sharing policy'=Policy,'#articles reviewed'=total,'#articles sharing code'=codepublished, '% articles sharing code'=percentage) %>% arrange(Journal) %>% kable("html") %>% kable_styling() %>% scroll_box(width = "100%", height = "500px")
 ```
 
