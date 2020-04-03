@@ -93,7 +93,7 @@ journal.policies %>% select(Full.Journal.Title,Require.computer.code.with.public
 
 ### 2.2 - Journals' code-sharing compliance
 
-**Table S2**.
+**Table S2**. List of `r table(journal.policies$Require.computer.code.with.publication_2015)['Yes']` ecological journals reviewed in this study and their code-sharing policies (updated in March 2020), number of articles reviewed, number of articles sharing at least some code, and the percentage of articles sharing at least some code.
 ```{r}
 # number of journals covered each year
 number.journals.covered <- as.data.frame(data.full %>% group_by(Publication_year.2,Journal) %>% summarise(count = n_distinct(CodePublished.2)) %>% summarise(n = n()))
@@ -135,8 +135,11 @@ figureS1 <- ggdotchart(full.journal.info, x = "abbreviations", y = "percentage",
                        font.label = list(color = "white", size = 9,vjust = 0.5),
                        #scale_y_continuous(breaks = seq(0,100,20)),
                        ggtheme = theme_pubr())
+
+ggpar(figureS1,legend.title = "Code-sharing policy")
+
 ```
-**Figure S1**. 
+**Figure S1**. Ecological journals reviewed and their estimated percentage of code-sharing articles. Journals are grouped by the level of the code-sharing policy, and numbers represent percentages.
 
 ## R Session Information
 
