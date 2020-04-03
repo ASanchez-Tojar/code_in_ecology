@@ -40,11 +40,11 @@ rm(list=ls())
 ##############################################################
 
 # importing data for 2015-2016
-db.2015.16 <- read.xlsx("data/Data_Feb_2020_V6.xlsx",
+db.2015.16 <- read.xlsx("data/Data_Feb_2020_V8.xlsx",
                         colNames = T,sheet = 1)
 
 # importing data for 2018-2019
-db.2018.19 <- read.xlsx("data/Data_Feb_2020_V6.xlsx",
+db.2018.19 <- read.xlsx("data/Data_Feb_2020_V8.xlsx",
                         colNames = T ,sheet = 2)
 
 
@@ -465,7 +465,7 @@ db.full.doi.reduced <- db.full.doi[,c("doi","Journal","Publication_year","Public
                                       "bioinformatic.analysis","additional.comment.on.analysis",
                                       "Stat_analysis_software","CodePublished","CodePublished.2","CodePublished.3","LinktoCode",
                                       "BreafDescription","InlineComments",
-                                      "CodeMentioned","CodeMentioned.2","LocationShared","LocationShared.2",
+                                      "CodeMentioned","CodeMentioned.2","Location_CodeMentioned","LocationShared","LocationShared.2",
                                       "Repository","FreeSoftware","DataUsed","DataShared.2","DataShared.3",
                                       "ExtraComments","Second_screener","Changes_after_second_screening",
                                       "Remarks_on_decisions")]
