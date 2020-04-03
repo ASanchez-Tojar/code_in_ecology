@@ -139,11 +139,11 @@ figureS1 <- ggdotchart(full.journal.info, x = "abbreviations", y = "percentage",
 ggpar(figureS1,legend.title = "Code-sharing policy")
 
 ```
-**Figure S1**. Ecological journals reviewed and their estimated percentage of code-sharing articles. Journals are grouped by the level of the code-sharing policy, and numbers represent percentages.
+**Figure S1**. Estimated percentage of code-sharing practices in the ecological journals reviewed. Journals are grouped by the level of the code-sharing policy, and numbers represent the percentages.
 
 ## R Session Information
 
-R session information detailing the versions and packages used for reproducibility purposes.
+R session information detailing the versions and packages used in this script for reproducibility purposes.
 
 ```{r}
 sessionInfo() %>% pander()
