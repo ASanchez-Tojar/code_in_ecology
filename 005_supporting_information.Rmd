@@ -148,6 +148,53 @@ journals.with.policy.2020 <- nrow(journal.policies[!(is.na(journal.policies$Requ
 # number of journals reviewed in 2015 that were still active in 2020
 journals.2020 <- nrow(journal.policies[!(is.na(journal.policies$Require.computer.code.with.publication_2020)),])
 
+# # number of journals covered each year
+# number.journals.covered <- as.data.frame(data.full %>% group_by(Publication_year.2,Journal) %>% summarise(count = n_distinct(CodePublished.2)) %>% summarise(n = n()))
+
+# counting number of articles per journal
+articles.per.journal <- as.data.frame(data.full %>% group_by(Journal) %>% summarise(total = n()))
+
+# counting number of articles with at least some code per journal
+code.published.per.journal <- as.data.frame(data.full %>% filter(CodePublished.3=="yes") %>% group_by(Journal) %>% summarise(codepublished = n()))
+
+# merging dataframes together
+full.journal <- merge(code.published.per.journal,articles.per.journal)
+full.journal$percentage <- round((full.journal$codepublished/full.journal$total)*100,0)
+
+# number of articles mentioning that code was published
+code.mentioned <- as.numeric(table(data.full$CodeMentioned.2)["yes"])
+
+# number of articles not mentioning that code was published
+code.not.mentioned <- as.numeric(table(data.full$CodeMentioned.2)["no"])
+
+# number of articles mentioning that code was published
+code.mentioned.code.script <- as.numeric(sum(table(data.full$CodeMentioned)["yes, code"],
+                                             table(data.full$CodeMentioned)["yes, code and script"],
+                                             table(data.full$CodeMentioned)["yes, script"]))
+
+# number of articles mentioning code availability in the data accessibility and/or materials and methods
+code.mentioned.section.dataacc.methods <- as.numeric(sum(table(data.full$Location_CodeMentioned)["dataaccessibility"],
+                                                         table(data.full$Location_CodeMentioned)["dataaccessibility and methods"],
+                                                         table(data.full$Location_CodeMentioned)["dataaccessibility and methods and supplement"],
+                                                         table(data.full$Location_CodeMentioned)["dataaccessibility and supplement"],
+                                                         table(data.full$Location_CodeMentioned)["methods"],
+                                                         table(data.full$Location_CodeMentioned)["methods and supplement"]))
+
+# number of articles mentioning code availability only in the supplements
+code.mentioned.section.supplements <- as.numeric(sum(table(data.full$Location_CodeMentioned)["supplement"],
+                                                         table(data.full$Location_CodeMentioned)["supplementary files descriptions"]))
+
+# number of articles using repositories to host their data
+code.hosted.repository <- as.numeric(table(data.full$LocationShared.2)["repository"])
+
+# number of articles using repositories to host their data in 2015/2016
+code.hosted.repository.2015.16 <- as.numeric(table(data.full[data.full$Publication_year<2018,"LocationShared.2"])["repository"])
+
+# number of articles using repositories to host their data in 2018/2019
+code.hosted.repository.2018.19 <- as.numeric(table(data.full[data.full$Publication_year>2016,"LocationShared.2"])["repository"])
+
+# number of articles using only the supplements to host their data
+code.hosted.supplements <- as.numeric(table(data.full$LocationShared.2)["supplementary file"])
 
 # creating vectors to build the data frame with
 
@@ -158,8 +205,21 @@ all.names <- c("articles sharing at least some code",
                "journals with code-sharing policies in 2020",
                "articles sharing seemingly all code",
                "articles sharing only some code",
-               "articles sharing at least some code in 2015",
-               "articles sharing at least some code in 2020")
+               "articles sharing at least some code in 2015/2016",
+               "articles sharing at least some code in 2018/2019",
+               "articles sharing at least some code per journal (min)",
+               "articles sharing at least some code per journal (max)",
+               "articles sharing at least some code per journal (median)",
+               "articles sharing at least some code per journal (mean)",
+               "articles sharing at least some code and highlighting code availability",
+               "articles sharing at least some code and highlighting code availability using code and/or script",
+               "articles sharing at least some code and highlighting code availability in data accessibility and/or methods section",
+               "articles sharing at least some code and highlighting code availability only in the supplements",
+               "articles sharing at least some code and not highlighting code availability",
+               "articles sharing at least some code and hosting it in a repository",
+               "articles sharing at least some code and hosting it only in the supplements",
+               "articles sharing at least some code and hosting it in a repository in 2015/2016",
+               "articles sharing at least some code and hosting it in a repository in 2018/2019")
 
 # vector with all percentages
 all.percentages <- round(
@@ -170,7 +230,20 @@ all.percentages <- round(
     (seemingly.all.code/eligible.articles.code)*100,
     (only.some.code/eligible.articles.code)*100,
     (at.least.some.code.year$code_published[1]/eligible.articles.code.year$eligible_articles[1])*100,
-    (at.least.some.code.year$code_published[2]/eligible.articles.code.year$eligible_articles[2])*100),0)
+    (at.least.some.code.year$code_published[2]/eligible.articles.code.year$eligible_articles[2])*100,
+    as.numeric(summary(full.journal$percentage)["Min."]),
+    as.numeric(summary(full.journal$percentage)["Max."]),
+    as.numeric(summary(full.journal$percentage)["Median"]),
+    as.numeric(summary(full.journal$percentage)["Mean"]),
+    (code.mentioned/at.least.some.code)*100,
+    (code.mentioned.code.script/code.mentioned)*100,
+    (code.mentioned.section.dataacc.methods/code.mentioned)*100,
+    (code.mentioned.section.supplements/code.mentioned)*100,
+    (code.not.mentioned/at.least.some.code)*100,
+    (code.hosted.repository/at.least.some.code)*100,
+    (code.hosted.supplements/at.least.some.code)*100,
+    (code.hosted.repository.2015.16/at.least.some.code.year$code_published[1])*100,
+    (code.hosted.repository.2018.19/at.least.some.code.year$code_published[2])*100),0)
 
 # vector with all numerators for calculating the percentage
 all.numerators <- c("#eligible articles with at least some code",
@@ -179,8 +252,21 @@ all.numerators <- c("#eligible articles with at least some code",
                     "#journals with code-sharing policies in 2020",
                     "#eligible articles with seemingly all code",
                     "#eligible articles with only some code",
-                    "#eligible articles with at least some code in 2015",
-                    "#eligible articles with at least some code in 2020")
+                    "#eligible articles with at least some code in 2015/2016",
+                    "#eligible articles with at least some code in 2018/2019",
+                    "#eligible articles per journal with at least some code",
+                    "#eligible articles per journal with at least some code",
+                    "#eligible articles per journal with at least some code",
+                    "#eligible articles per journal with at least some code",
+                    "#eligible articles with at least some code that highlighted code availability",
+                    "#eligible articles with at least some code that highlighted code availability using code and/or script",
+                    "#eligible articles with at least some code that highlighted code availability in data accessibility and/or methods section",
+                    "#eligible articles with at least some code that highlighted code availability only in the supplements",
+                    "#eligible articles with at least some code that did not highlighted code availability",
+                    "#eligible articles with at least some code and hosting it in a repository",
+                    "#eligible articles with at least some code and hosting it only in the supplements",
+                    "#eligible articles sharing at least some code and hosting it in a repository in 2015/2016",
+                    "#eligible articles sharing at least some code and hosting it in a repository in 2018/2019")
 
 # vector with all denominators for calculating the percentage
 all.denominators <- c("#eligible articles",
@@ -189,8 +275,20 @@ all.denominators <- c("#eligible articles",
                       "#journals reviewed and still existing in 2020",
                       "#eligible articles",
                       "#eligible articles",
-                      "#eligible articles in 2015",
-                      "#eligible articles in 2020")
+                      "#eligible articles in 2015/2016",
+                      "#eligible articles in 2018/2019",
+                      "#eligible articles per journal",
+                      "#eligible articles per journal",
+                      "#eligible articles per journal",
+                      "#eligible articles per journal",
+                      "#eligible articles with at least some code",
+                      "#eligible articles with at least some code that highlighted code availability",
+                      "#eligible articles with at least some code that highlighted code availability",
+                      "#eligible articles with at least some code that highlighted code availability",
+                      "#eligible articles with at least some code",
+                      "#eligible articles with at least some code",
+                      "#eligible articles with at least some code in 2015/2016",
+                      "#eligible articles with at least some code in 2018/2019")
 
 # putting together tableS2 and renaming columns
 tableS2 <- as.data.frame(cbind(all.names,all.percentages,all.numerators,all.denominators))
@@ -208,19 +306,6 @@ tableS2 %>% kable("html") %>% kable_styling() %>% scroll_box(width = "100%", hei
 
 **Table S3**. List of `r table(journal.policies$Require.computer.code.with.publication_2015)['Yes']` ecological journals reviewed in this study and their code-sharing policies (updated in March 2020), number of articles reviewed, number of articles sharing at least some code, and the percentage of articles sharing at least some code.
 ```{r}
-# number of journals covered each year
-number.journals.covered <- as.data.frame(data.full %>% group_by(Publication_year.2,Journal) %>% summarise(count = n_distinct(CodePublished.2)) %>% summarise(n = n()))
-
-# counting number of articles per journal
-articles.per.journal <- as.data.frame(data.full %>% group_by(Journal) %>% summarise(total = n()))
-
-# counting number of articles with at least some code per journal
-code.published.per.journal <- as.data.frame(data.full %>% filter(CodePublished.3=="yes") %>% group_by(Journal) %>% summarise(codepublished = n()))
-
-# merging dataframes together
-full.journal <- merge(code.published.per.journal,articles.per.journal)
-full.journal$percentage <- round((full.journal$codepublished/full.journal$total)*100,0)
-
 # import journal information and abbreviations
 journal.info <- read.table("data/journals_info_v2.csv",header=T,sep=",")
 
