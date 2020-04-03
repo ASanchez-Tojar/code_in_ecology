@@ -1,0 +1,149 @@
+---
+title: Low availability of code in ecology\':' a call for urgent action
+author: Antica Culina, Ilona van den Berg, Simon Evans, Alfredo Sanchez-Tojar
+date: 'Last updated: `r format(Sys.time(), "%d %B, %Y")`'
+output:
+  html_document:
+    code_download: yes
+    code_folding: hide
+    toc: yes
+    toc_float: yes
+  pdf_document:
+    toc: yes
+  word_document:
+    toc: yes
+#bibliography: Sanchez-Tojar_et_al_commentary.bib
+subtitle: Supporting Information
+---
+
+```{r,echo=FALSE, cache=FALSE}
+## numbers >= 10^5 will be denoted in scientific notation, and rounded to 2 digits
+options(digits=3)
+```
+
+```{r setup, echo = FALSE, eval = TRUE}
+rm(list=ls())
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, eval = TRUE)
+pacman::p_load(openxlsx,dplyr,stringr,ggplot2,tidyverse,pander,ggpubr,knitr,kableExtra)
+
+# importing datasets
+data.full <- read.table("data/code_availability_full_and_clean.csv",header=TRUE,sep=",")
+journal.policies <- read.xlsx("data/Updated_Table_Mislan_2020_v2.xlsx",colNames=T,sheet=1)
+
+# Coder's information: 
+# Alfredo Sanchez-Tojar (@ASanchez_Tojar)
+# Profile: https://goo.gl/PmpPEB
+# Department of Evolutionary Biology, Bielefeld University (GER) 
+# Email: alfredo.tojar@gmail.com
+# Script first created on the 2nd of April 2020
+```
+
+## 1 - Methods
+
+### 1.1 - State of analytical code in ecology
+
+We randomly sampled articles published in ecological journals for which code-sharing has been either mandatory or encouraged since June 2015 at the latest. Sampling within these journals maximizes the number of codes available for quality assessment (see below), and also helps us to understand where other ecological journals will likely be in the near future (Stodden et al. 2013). The sample of journals was obtained from Mislan et al. (2016), who identified `r table(journal.policies$Require.computer.code.with.publication_2015)['Yes']` out of `r nrow(journal.policies)` (`r round((table(journal.policies$Require.computer.code.with.publication_2015)['Yes']/nrow(journal.policies))*100,0)`%) ecological journals with mandatory or encouraging code-sharing policies in place since at least the 1st of June 2015 (Table S1). We sampled all the articles published in these `r table(journal.policies$Require.computer.code.with.publication_2015)['Yes']` journals using the Web of Science Core Collection (search performed at the Netherlands Institute of Ecology) for two distinct temporal periods: 1st of June 2015 to 9th of December 2016 (2015/16 dataset, N= 4,366 records), and 1st of January 2018 to 21st of May 2019 (2018/19 dataset, N=4,291). A random sample of 200 articles from each period was then selected using the function “sample” in R v. 3.3.2 (R Core Team 2013).
+
+For each of the 400 articles, we determined whether the article was relevant to our survey by screening all titles and abstracts using the software Rayyan (Ouzzani et al. 2016). Reviews, opinion pieces, and commentaries were excluded, whereas articles that conducted some kind of statistical analysis and/or simulations were kept for further screening. All the articles were double screened at this stage (2015/16 by AC and IvB; and 2018/19 by AST and SE). As a result, `r table(data.full[data.full$Publication_year.2=='2015-2016','Excluded.abstract.screening'])["no"]` of the `r nrow(data.full[data.full$Publication_year.2=='2015-2016',])` articles in 2015/16 dataset, and `r table(data.full[data.full$Publication_year.2=='2018-2019','Excluded.abstract.screening'])["no"]` of the `r nrow(data.full[data.full$Publication_year.2=='2018-2019',])` articles in 2018/19 dataset were kept for further evaluation. The full list of these articles, with the results of the screening is provided (see file `data/code_availability_full_and_clean.csv`).
+
+In the next steps (summarized in Figure S1) AC evaluated `r table(data.full[data.full$Publication_year.2=='2015-2016','Excluded.abstract.screening'])["no"]` articles from 2015/16, and AST evaluated `r table(data.full[data.full$Publication_year.2=='2018-2019','Excluded.abstract.screening'])["no"]` articles from 2018/19. First, each article was read in detail to determine if it was a purely bioinformatical (i.e. molecular) study with solely bioinformatical analyses. Only studies that conducted at least some statistical analyses other than bioinformatics (including simulations) were considered further (hereafter referred to as 'non-molecular'). These non-molecular articles (`r table(data.full[data.full$Publication_year.2=='2015-2016','statistical.analysis.and.or.simulations.2'])["yes"]` in 2015/16; `r table(data.full[data.full$Publication_year.2=='2018-2019','statistical.analysis.and.or.simulations.2'])["yes"]` in 2018/19) were then evaluated based on the following (and as shown in Figure S1):
+
+1)	Was the analytical code published? (‘yes’, ‘no’, ‘some’). This was done by checking both the article’s main text, data accessibly statements, and the supplementary materials, including archived data, if any. If no code (‘code’, ‘script’, ‘syntax’) was mentioned in any of these sections, then all links to archived data, and all supplementary materials were searched. 
+
+2)	What software was used in the analysis? (e.g. R, Python, SAS...)
+
+3)	Were there data used in the analysis (‘yes’, ‘no’)? If yes, were the data published (‘yes’, ‘no’, ‘some’)?
+
+For those articles that had published seemingly all or at least some of their code (`r table(data.full[data.full$Publication_year.2=='2015-2016','CodePublished.3'])["yes"]` in 2015/16; `r table(data.full[data.full$Publication_year.2=='2018-2019','CodePublished.3'])["yes"]` in 2018/19), we evaluated the following:
+
+4)	Where was the code published (‘repository’, ‘supplementary material’, ‘other’)?
+
+5)	Was the existence of code clearly mentioned (‘yes’, ‘no’), and if so, how (‘code’, ‘script’, ‘other’)?
+
+6)	Where was the reference to the code made, if at all (‘methods section’, ‘data accessibility statement’, ‘supplementary material’, ‘other’)?
+
+7)	Did the code include some kind of documentation such as README or HowTo files (‘yes’, ‘no’ or ‘with some comments’)?
+
+8)	Were there inline comments within the code (‘yes’, ‘no’)?
+
+<!-- <center> -->
+
+<!-- ![**Figure S1**. ...](plots/FigureS1.png) -->
+
+<!-- </center> -->
+
+To ensure data reliability, we randomly selected and double-checked data extraction (two observers: AST and AC) for `r round((nrow(data.full[(data.full$Second_screener=="AST" | data.full$Second_screener=="AC") & !(is.na(data.full$Second_screener)),])/table(data.full$Excluded.abstract.screening)["no"])*100,0)`% of all the articles that had passed the title-and-abstract screening (`r nrow(data.full[data.full$Second_screener=="AST" & !(is.na(data.full$Second_screener)),])` out of `r table(data.full[data.full$Publication_year.2=='2015-2016','Excluded.abstract.screening'])["no"]` articles from 2015/16, and `r nrow(data.full[data.full$Second_screener=="AC" & !(is.na(data.full$Second_screener)),])` out of `r table(data.full[data.full$Publication_year.2=='2018-2019','Excluded.abstract.screening'])["no"]` from 2018/19 dataset). The decision overlap between observers was very high (please see file `data/code_availability_full_and_clean.csv` for changes and explanations made to the table after the double screening). Some additional articles were further intentionally double-checked whenever the original screener was not sure about the assignment of some scores (`r nrow(data.full[(data.full$Second_screener=="AST-quick" | data.full$Second_screener=="AC-quick") & !(is.na(data.full$Second_screener)),])` articles) or when the original screener could not find any reference to the software used in the analysis (`r nrow(data.full[data.full$Stat_analysis_software=="Not Stated" & !(is.na(data.full$Stat_analysis_software)),])` articles; more details in file `data/code_availability_full_and_clean.csv`).
+
+### 1.2 - Journals' code-sharing policies
+
+We explored if the number of ecological journals with code-sharing policies has increased since 2015, when only `r table(journal.policies$Require.computer.code.with.publication_2015)['Yes']` out of `r nrow(journal.policies)` (`r round((table(journal.policies$Require.computer.code.with.publication_2015)['Yes']/nrow(journal.policies))*100,0)`%) had code-sharing policies (Mislan et al. 2016). In March 2020 we investigated the existence of code-sharing policies for all the `r nrow(journal.policies)` ecological journals identified by Mislan et al. (2016; Table S1). Two observers (AC and AST) carefully read the 'Authors Instructions' and 'Editorial Policies' of each journal (i.e. each journal was scored twice, once per observer). If none of these sections explicitly mentioned data and/or code, we also checked other sections of the journal's website, whenever possible. Unclear cases were discussed together. Based on the information collected, we scored the journals' code-sharing policies as: ‘encouraged’ (publication of the code is explicitly encouraged, but not required), ‘mandatory’ (code must be published together with the article), or 'encouraged/mandatory' (when the wording made it difficult to judge if code publication is encouraged or required). If a journal did not explicitly encouraged code-sharing (i.e. even when it mentioned research artifacts, but not 'code' or 'script' explicitly: `r nrow(journal.policies[journal.policies$Require.computer.code.with.publication_2020=="No" & !(is.na(journal.policies$Require.computer.code.with.publication_2020)) & !(is.na(journal.policies$Comment_on_2020)),])` out of `r nrow(journal.policies[!(is.na(journal.policies$Require.computer.code.with.publication_2020)),])`, `r round((nrow(journal.policies[journal.policies$Require.computer.code.with.publication_2020=="No" & !(is.na(journal.policies$Require.computer.code.with.publication_2020)) & !(is.na(journal.policies$Comment_on_2020)),])/nrow(journal.policies[!(is.na(journal.policies$Require.computer.code.with.publication_2020)),]))*100,0)`%), the journal's code-sharing policy was scored as ‘none’ (i.e. code is not mentioned; see comments in file `data/Updated_Table_Mislan_2020_v2.xlsx`).
+
+**Table S1**. List of `r nrow(journal.policies)` ecological journals and their code-sharing policies in June 2015 (Mislan et al. 2016) and in March 2020 (this study).
+```{r}
+# printing Table S1
+journal.policies %>% select(Full.Journal.Title,Require.computer.code.with.publication_2015,Require.computer.code.with.publication_2020) %>%
+  rename(Journal=Full.Journal.Title,'Code-sharing policy 2015'=Require.computer.code.with.publication_2015,'Code-sharing policy 2020'=Require.computer.code.with.publication_2020) %>% arrange(Journal) %>%
+  kable("html") %>% kable_styling() %>%
+  scroll_box(width = "100%", height = "500px")
+```
+
+## 2 - Results
+
+### 2.1 - Percentages calculations
+
+### 2.2 - Journals' code-sharing compliance
+
+**Table S2**.
+```{r}
+# number of journals covered each year
+number.journals.covered <- as.data.frame(data.full %>% group_by(Publication_year.2,Journal) %>% summarise(count = n_distinct(CodePublished.2)) %>% summarise(n = n()))
+
+# counting number of articles per journal
+articles.per.journal <- as.data.frame(data.full %>% group_by(Journal) %>% summarise(total = n()))
+
+# counting number of articles with at least some code per journal
+code.published.per.journal <- as.data.frame(data.full %>% filter(CodePublished.3=="yes") %>% group_by(Journal) %>% summarise(codepublished = n()))
+
+# merging dataframes together
+full.journal <- merge(code.published.per.journal,articles.per.journal)
+full.journal$percentage <- round((full.journal$codepublished/full.journal$total)*100,0)
+
+# import journal information and abbreviations
+journal.info <- read.table("data/journals_info_v2.csv",header=T,sep=",")
+
+# merging journal info to percentages
+full.journal.info <- merge(full.journal,journal.info)
+
+# printing table S2
+full.journal.info %>% select(abbreviations,Policy,total,codepublished,percentage) %>% rename(Journal=abbreviations,'Code-sharing policy'=Policy,'#articles reviewed'=total,'#articles sharing code'=codepublished, '% articles sharing code'=percentage) %>% arrange(Journal) %>% kable("html") %>% kable_styling() %>% scroll_box(width = "100%", height = "500px")
+```
+
+```{r}
+# creating figure S1
+figureS1 <- ggdotchart(full.journal.info, x = "abbreviations", y = "percentage",
+                       color = "Policy",
+                       palette = c("#00AFBB", "#E7B800", "#FC4E07"),
+                       sorting = "descending",
+                       add = "segments",
+                       rotate = TRUE,
+                       group = "Policy",
+                       xlab = "",
+                       ylab = "% of articles publishing some code",
+                       #dot.size = 100/(full.journal.info$total),
+                       dot.size = 6,
+                       label = round(full.journal.info$percentage,0),
+                       font.label = list(color = "white", size = 9,vjust = 0.5),
+                       #scale_y_continuous(breaks = seq(0,100,20)),
+                       ggtheme = theme_pubr())
+```
+**Figure S1**. 
+
+## R Session Information
+
+R session information detailing the versions and packages used for reproducibility purposes.
+
+```{r}
+sessionInfo() %>% pander()
+```
+
+## References
