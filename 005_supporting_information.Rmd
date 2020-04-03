@@ -24,7 +24,7 @@ options(digits=3)
 ```{r setup, echo = FALSE, eval = TRUE}
 rm(list=ls())
 knitr::opts_chunk$set(echo = TRUE, warning = FALSE, eval = TRUE)
-pacman::p_load(openxlsx,dplyr,stringr,ggplot2,tidyverse,pander,ggpubr,knitr,kableExtra)
+pacman::p_load(openxlsx,dplyr,ggplot2,tidyverse,pander,ggpubr,knitr,kableExtra)
 
 # importing datasets
 data.full <- read.table("data/code_availability_full_and_clean.csv",header=TRUE,sep=",")
@@ -135,6 +135,18 @@ at.least.some.data <- as.numeric(data.full %>%
                                    filter(!(is.na(DataShared.3))) %>% 
                                    summarise(data_published = sum(DataShared.3 == "yes")))
 
+# number of articles that published seemingly all code and data (if any used)
+seemingly.all.code.and.data <- as.numeric(data.full %>% 
+                                            filter(!(is.na(CodePublished.2))) %>% 
+                                            summarise(code_and_data_published = sum(CodePublished.2 == "yes" & (DataShared.2 == "yes" | is.na(DataShared.2)))))
+
+# number of articles that published seemingly all code and data (if any used)
+seemingly.all.code.and.data.year <-data.full %>% 
+  filter(!(is.na(CodePublished.2))) %>% 
+  group_by(Publication_year.2) %>% 
+  summarise(code_and_data_published = sum(CodePublished.2 == "yes" & (DataShared.2 == "yes" | is.na(DataShared.2))))
+
+
 # number of journals with some type of code-sharing policy in 2015
 journals.with.policy.2015 <- as.numeric(table(journal.policies$Require.computer.code.with.publication_2015)['Yes'])
 
@@ -182,7 +194,7 @@ code.mentioned.section.dataacc.methods <- as.numeric(sum(table(data.full$Locatio
 
 # number of articles mentioning code availability only in the supplements
 code.mentioned.section.supplements <- as.numeric(sum(table(data.full$Location_CodeMentioned)["supplement"],
-                                                         table(data.full$Location_CodeMentioned)["supplementary files descriptions"]))
+                                                     table(data.full$Location_CodeMentioned)["supplementary files descriptions"]))
 
 # number of articles using repositories to host their data
 code.hosted.repository <- as.numeric(table(data.full$LocationShared.2)["repository"])
@@ -219,7 +231,10 @@ all.names <- c("articles sharing at least some code",
                "articles sharing at least some code and hosting it in a repository",
                "articles sharing at least some code and hosting it only in the supplements",
                "articles sharing at least some code and hosting it in a repository in 2015/2016",
-               "articles sharing at least some code and hosting it in a repository in 2018/2019")
+               "articles sharing at least some code and hosting it in a repository in 2018/2019",
+               "articles with the potential to be computationally reproducible",
+               "articles with the potential to be computationally reproducible in 2015/2016",
+               "articles with the potential to be computationally reproducible in 2018/2019")
 
 # vector with all percentages
 all.percentages <- round(
@@ -243,30 +258,36 @@ all.percentages <- round(
     (code.hosted.repository/at.least.some.code)*100,
     (code.hosted.supplements/at.least.some.code)*100,
     (code.hosted.repository.2015.16/at.least.some.code.year$code_published[1])*100,
-    (code.hosted.repository.2018.19/at.least.some.code.year$code_published[2])*100),0)
+    (code.hosted.repository.2018.19/at.least.some.code.year$code_published[2])*100,
+    (seemingly.all.code.and.data/eligible.articles.code)*100,
+    (seemingly.all.code.and.data.year$code_and_data_published[1]/eligible.articles.code.year$eligible_articles[1])*100,
+    (seemingly.all.code.and.data.year$code_and_data_published[2]/eligible.articles.code.year$eligible_articles[2])*100),0)
 
 # vector with all numerators for calculating the percentage
-all.numerators <- c("#eligible articles with at least some code",
-                    "#eligible articles with at least some data",
+all.numerators <- c("#eligible articles sharing at least some code",
+                    "#eligible articles sharing at least some data",
                     "#journals with code-sharing policies in 2015",
                     "#journals with code-sharing policies in 2020",
-                    "#eligible articles with seemingly all code",
-                    "#eligible articles with only some code",
-                    "#eligible articles with at least some code in 2015/2016",
-                    "#eligible articles with at least some code in 2018/2019",
-                    "#eligible articles per journal with at least some code",
-                    "#eligible articles per journal with at least some code",
-                    "#eligible articles per journal with at least some code",
-                    "#eligible articles per journal with at least some code",
-                    "#eligible articles with at least some code that highlighted code availability",
-                    "#eligible articles with at least some code that highlighted code availability using code and/or script",
-                    "#eligible articles with at least some code that highlighted code availability in data accessibility and/or methods section",
-                    "#eligible articles with at least some code that highlighted code availability only in the supplements",
-                    "#eligible articles with at least some code that did not highlighted code availability",
-                    "#eligible articles with at least some code and hosting it in a repository",
-                    "#eligible articles with at least some code and hosting it only in the supplements",
+                    "#eligible articles sharing seemingly all code",
+                    "#eligible articles sharing only some code",
+                    "#eligible articles sharing at least some code in 2015/2016",
+                    "#eligible articles sharing at least some code in 2018/2019",
+                    "#eligible articles per journal sharing at least some code",
+                    "#eligible articles per journal sharing at least some code",
+                    "#eligible articles per journal sharing at least some code",
+                    "#eligible articles per journal sharing at least some code",
+                    "#eligible articles sharing at least some code that highlighted code availability",
+                    "#eligible articles sharing at least some code that highlighted code availability using code and/or script",
+                    "#eligible articles sharing at least some code that highlighted code availability in data accessibility and/or methods section",
+                    "#eligible articles sharing at least some code that highlighted code availability only in the supplements",
+                    "#eligible articles sharing at least some code that did not highlighted code availability",
+                    "#eligible articles sharing at least some code and hosting it in a repository",
+                    "#eligible articles sharing at least some code and hosting it only in the supplements",
                     "#eligible articles sharing at least some code and hosting it in a repository in 2015/2016",
-                    "#eligible articles sharing at least some code and hosting it in a repository in 2018/2019")
+                    "#eligible articles sharing at least some code and hosting it in a repository in 2018/2019",
+                    "#eligible articles sharing seemingly all code and data (if any used)",
+                    "#eligible articles with the potential to be computationally reproducible in 2015/2016",
+                    "#eligible articles with the potential to be computationally reproducible in 2018/2019")
 
 # vector with all denominators for calculating the percentage
 all.denominators <- c("#eligible articles",
@@ -281,21 +302,25 @@ all.denominators <- c("#eligible articles",
                       "#eligible articles per journal",
                       "#eligible articles per journal",
                       "#eligible articles per journal",
-                      "#eligible articles with at least some code",
-                      "#eligible articles with at least some code that highlighted code availability",
-                      "#eligible articles with at least some code that highlighted code availability",
-                      "#eligible articles with at least some code that highlighted code availability",
-                      "#eligible articles with at least some code",
-                      "#eligible articles with at least some code",
-                      "#eligible articles with at least some code in 2015/2016",
-                      "#eligible articles with at least some code in 2018/2019")
+                      "#eligible articles sharing at least some code",
+                      "#eligible articles sharing at least some code that highlighted code availability",
+                      "#eligible articles sharing at least some code that highlighted code availability",
+                      "#eligible articles sharing at least some code that highlighted code availability",
+                      "#eligible articles sharing at least some code",
+                      "#eligible articles sharing at least some code",
+                      "#eligible articles sharing at least some code",
+                      "#eligible articles sharing at least some code in 2015/2016",
+                      "#eligible articles sharing at least some code in 2018/2019",
+                      "#eligible articles",
+                      "#eligible articles in 2015/2016",
+                      "#eligible articles in 2018/2019")
 
 # putting together tableS2 and renaming columns
 tableS2 <- as.data.frame(cbind(all.names,all.percentages,all.numerators,all.denominators))
 names(tableS2) <- c("Name","%","Numerator","Denominator")
 ```
 
-**Table S2**. List of all percentages calculated and presented in the main manuscript, and how they were calculated to avoid any misunderstanding. Percentages sorted by the order of appearance in the main manuscript (including the abstract).
+**Table S2**. List of all percentages that we calculated and presented from our data in the main manuscript, and how they were calculated to avoid any misunderstanding. Percentages sorted by the order of appearance in the main manuscript (including the abstract).
 
 ```{r}
 # printing Table S2
