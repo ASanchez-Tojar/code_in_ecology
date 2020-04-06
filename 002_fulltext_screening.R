@@ -66,7 +66,7 @@ db.refs.included$fulltextID <- paste0("CAE",str_pad(c(1:nrow(db.refs.included)),
 # Formating dataset: fulltext screening + data extraction
 ##############################################################
 
-data.extraction.template <- read.xlsx("screening_process/fulltext_screening/Code_evaluation_v2.xlsx",
+data.extraction.template <- read.xlsx("screening_process/fulltext_screening/Code_evaluation_template_v2.xlsx",
                                       colNames=T,sheet = 1)
 
 
