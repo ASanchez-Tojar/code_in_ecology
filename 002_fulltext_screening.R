@@ -126,9 +126,10 @@ write.xlsx(db.refs.fulltext[,c("fulltextID",names(data.extraction.template))],
 
 ################################################################
 # Choosing 15% of references from 2016-2017 for double-checking
+# Done only for visual purposes for AST, data available in Data_Feb_2020_V8.xlsx
 ################################################################
 
-references.2016.dataset <- read.xlsx("data/Code_data_table_2017_v2.xlsx",
+references.2016.dataset <- read.xlsx("data/Code_data_table_2017_v2.xlsx", #dataset outdated due to typos fixing, and did not add it to the repository to avoid anyone using these dataset with typos, please see final Data_Feb_2020_V8.xlsx where all the double-checked references are clearly marked together with the decisions
                                      colNames=T,sheet = 1)
 
 # subsetting those references that passed the title and abstract screening
