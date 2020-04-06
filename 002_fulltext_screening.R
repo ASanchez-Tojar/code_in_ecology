@@ -101,18 +101,18 @@ db.refs.fulltext$Title <- str_remove(as.character(db.refs.fulltext$Title),
                                      regex("\\}"))
 
 
-# adding impact factor from previous dataset
-dataset.1 <- read.xlsx("data/Code_data_table_19_03_2018.xlsx",
-                       colNames=T,sheet = 1)
-
-JIF <- unique(dataset.1[,c("Journal","Imact_Factor")])
-JIF <- JIF[order(JIF$Journal),]
-JIF <- JIF[!(is.na(JIF$Journal)),]
-
-
-db.refs.fulltext <- merge(db.refs.fulltext,JIF,by="Journal",all.x=T)
-db.refs.fulltext$Impact_Factor <- NULL
-names(db.refs.fulltext)[names(db.refs.fulltext) == "Imact_Factor"] <- "Impact_Factor"
+# # adding impact factor from previous dataset #outdated
+# dataset.1 <- read.xlsx("data/Code_data_table_19_03_2018.xlsx",
+#                        colNames=T,sheet = 1)
+# 
+# JIF <- unique(dataset.1[,c("Journal","Imact_Factor")])
+# JIF <- JIF[order(JIF$Journal),]
+# JIF <- JIF[!(is.na(JIF$Journal)),]
+# 
+# 
+# db.refs.fulltext <- merge(db.refs.fulltext,JIF,by="Journal",all.x=T)
+# db.refs.fulltext$Impact_Factor <- NULL
+# names(db.refs.fulltext)[names(db.refs.fulltext) == "Imact_Factor"] <- "Impact_Factor"
 
 ##############################################################
 # Saving dataset for: fulltext screening + data extraction
