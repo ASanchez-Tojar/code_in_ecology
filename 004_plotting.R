@@ -279,7 +279,7 @@ figure1c <- full.location.summary %>%
 # exporting figure
 library(ggpubr)
 
-tiff("ms/Figure1_draft.tiff",
+tiff("plots/Figure1.tiff",
      height=12, width=28,
      units='cm', compression="lzw", res=800)
 
