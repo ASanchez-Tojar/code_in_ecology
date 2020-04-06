@@ -66,11 +66,11 @@ For those articles that had published seemingly all or at least some of their co
 
 8)	Were there inline comments within the code (‘yes’, ‘no’)?
 
-<!-- <center> -->
+<center>
 
-<!-- ![**Figure S1**. ...](plots/FigureS1.png) -->
+![**Figure S1**. Diagram of number of studies for each category.](plots/FigureS1.png)
 
-<!-- </center> -->
+</center>
 
 To ensure data reliability, we randomly selected and double-checked data extraction (two observers: AST and AC) for `r round((nrow(data.full[(data.full$Second_screener=="AST" | data.full$Second_screener=="AC") & !(is.na(data.full$Second_screener)),])/table(data.full$Excluded.abstract.screening)["no"])*100,0)`% of all the articles that had passed the title-and-abstract screening (`r nrow(data.full[data.full$Second_screener=="AST" & !(is.na(data.full$Second_screener)),])` out of `r table(data.full[data.full$Publication_year.2=='2015-2016','Excluded.abstract.screening'])["no"]` articles from 2015/16, and `r nrow(data.full[data.full$Second_screener=="AC" & !(is.na(data.full$Second_screener)),])` out of `r table(data.full[data.full$Publication_year.2=='2018-2019','Excluded.abstract.screening'])["no"]` from 2018/19 dataset). The decision overlap between observers was very high (please see file `data/code_availability_full_and_clean.csv` for changes and explanations made to the table after the double screening). Some additional articles were further intentionally double-checked whenever the original screener was not sure about the assignment of some scores (`r nrow(data.full[(data.full$Second_screener=="AST-quick" | data.full$Second_screener=="AC-quick") & !(is.na(data.full$Second_screener)),])` articles) or when the original screener could not find any reference to the software used for the analyses (`r nrow(data.full[data.full$Stat_analysis_software=="Not Stated" & !(is.na(data.full$Stat_analysis_software)),])` articles; more details in file `data/code_availability_full_and_clean.csv`).
 
