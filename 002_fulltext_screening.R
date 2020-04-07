@@ -12,7 +12,8 @@
 ###################################################################
 
 # This script is to subset a reference dataset after title-and-
-# abstract screening was performed in rayyan. This data  is part of
+# abstract screening was performed in rayyan, and to get it ready
+# for fulltext screening and data extraction. This data is part of
 # the following study:
 
 # Antica Culina, Ilona van den Berga, Simon Evans, Alfredo Sanchez-Tojar. 
@@ -66,6 +67,7 @@ db.refs.included$fulltextID <- paste0("CAE",str_pad(c(1:nrow(db.refs.included)),
 # Formating dataset: fulltext screening + data extraction
 ##############################################################
 
+# contains the variables we want to extract data from
 data.extraction.template <- read.xlsx("screening_process/fulltext_screening/Code_evaluation_template_v2.xlsx",
                                       colNames=T,sheet = 1)
 
@@ -129,7 +131,7 @@ write.xlsx(db.refs.fulltext[,c("fulltextID",names(data.extraction.template))],
 # Done only for visual purposes for AST, data available in Data_Feb_2020_V8.xlsx
 ################################################################
 
-references.2016.dataset <- read.xlsx("data/Code_data_table_2017_v2.xlsx", #dataset outdated due to typos fixing, and did not add it to the repository to avoid anyone using these dataset with typos, please see final Data_Feb_2020_V8.xlsx where all the double-checked references are clearly marked together with the decisions
+references.2016.dataset <- read.xlsx("data/Code_data_table_2017_v2.xlsx", #dataset outdated due to typos fixing, and did not add it to the repository to avoid anyone using these outdated dataset with typos, please see final Data_Feb_2020_V8.xlsx where all the double-checked references are clearly marked together with the decisions
                                      colNames=T,sheet = 1)
 
 # subsetting those references that passed the title and abstract screening
@@ -150,6 +152,7 @@ references.2016.to.redo <- references.2016.dataset.subset[sort(random.selection)
 # removing data to create a template
 references.2016.to.redo[,c(8:24)] <- ""
 
+# exporting dataset for AST to perform random double-check of data extracted by AC (files for double-checking 2018-2019 created by AC without using code)
 write.xlsx(references.2016.to.redo[,c(1:24)],
            "screening_process/fulltext_screening/Code_data_table_2017_double-checking_subset.xlsx",
            sheetName="Sheet1",col.names=TRUE, row.names=F,

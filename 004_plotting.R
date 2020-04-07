@@ -11,7 +11,7 @@
 # Description of script and Instructions
 ###################################################################
 
-# This script is to create figures for the following study:
+# This script is to create Figure 1 for the following study:
 
 # Antica Culina, Ilona van den Berga, Simon Evans, Alfredo Sanchez-Tojar. 
 # Low availability of code in ecology: a call for urgent action.
@@ -67,7 +67,7 @@ none.published <- db.full %>%
   summarise(codepublished = sum(CodePublished.3 == "no"))
 
 
-# calculating number of eligible articles (after title-and-abstract and full-text screening)
+# calculating number of eligible articles (after title-and-abstract and fulltext screening)
 total <- db.full %>% 
   filter(!(is.na(Publication_year.2)), !(is.na(CodePublished.2)), statistical.analysis.and.or.simulations.2=="yes") %>% 
   group_by(Publication_year.2) %>% 
@@ -145,7 +145,7 @@ none.data.published <- db.full %>%
   summarise(datapublished = sum(DataShared.2 == "no"))
 
 
-# calculating number of eligible articles (after title-and-abstract and full-text screening)
+# calculating number of eligible articles (after title-and-abstract and fulltext screening)
 total.data <- db.full %>%
   filter(!(is.na(Publication_year.2)), !(is.na(DataShared.2)), statistical.analysis.and.or.simulations.2=="yes") %>%
   group_by(Publication_year.2) %>%
@@ -202,28 +202,28 @@ figure1b <- full.data.summary %>%
 # Location code figure
 ##############################################################
 
-# calculating number of studies that published at least some code
+# calculating number of studies that published code in a repository
 repository <- db.full %>% 
   filter(!(is.na(Publication_year.2)), !(is.na(LocationShared.2))) %>% 
   group_by(Publication_year.2) %>% 
   summarise(location = sum(LocationShared.2 == "repository"))
 
 
-# calculating number of studies that published seemingly all code
+# calculating number of studies that published code as supplementary file
 supplementary <- db.full %>% 
   filter(!(is.na(Publication_year.2)), !(is.na(LocationShared.2))) %>% 
   group_by(Publication_year.2) %>% 
   summarise(location = sum(LocationShared.2 == "supplementary file"))
 
 
-# calculating number of studies that did not publish any code
+# calculating number of studies that published code in a webpage
 webpage <- db.full %>% 
   filter(!(is.na(Publication_year.2)), !(is.na(LocationShared.2))) %>% 
   group_by(Publication_year.2) %>% 
   summarise(location = sum(LocationShared.2 == "webpage"))
 
 
-# calculating number of eligible articles (after title-and-abstract and full-text screening)
+# calculating number of eligible articles, i.e. those with code
 total.location <- db.full %>% 
   filter(!(is.na(Publication_year.2)), !(is.na(LocationShared.2)), statistical.analysis.and.or.simulations.2=="yes") %>% 
   group_by(Publication_year.2) %>% 

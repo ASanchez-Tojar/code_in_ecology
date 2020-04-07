@@ -111,7 +111,7 @@ for(i in 1:nrow(db.refs.rayyan)){
 write.csv(db.refs.rayyan,
           "screening_process/title-and-abstract_screening/random_200_2018_2019_rayyan.csv",row.names=FALSE)
 
-#remember to manually remove the quotes for the column names only in the .csv file
+#remember to manually remove the quotes for the column names only in the .csv file, which is why we created the random_200_2018_2019_rayyan_edited.csv file
 
 sink("screening_process/title-and-abstract_screening/screening_process_Rpackages_session.txt")
 sessionInfo()

@@ -17,6 +17,11 @@
 # Antica Culina, Ilona van den Berga, Simon Evans, Alfredo Sanchez-Tojar. 
 # Low availability of code in ecology: a call for urgent action.
 
+# The are many lines of commented code that were used simply to
+# peform checks throughout the dataset. Any typo was then corrected
+# in the original dataset, which, together with having two observers
+# working on this via email, explains why the version of the dataset
+# imported is V8.
 
 ###################################################################
 # Packages needed
@@ -156,7 +161,7 @@ table(db.full$statistical.analysis.and.or.simulations)
 # creating a new variable with simply yes or no to make subsetting easier, also, becuase some 
 # papers are dificult to label (e.g. simulation vs. model), and we are not interesting in strictly 
 # labelling them per se, just to know if they provide some stats or simulations for which analytical
-#code should hopefully be available.
+# code should hopefully be available.
 db.full$statistical.analysis.and.or.simulations.2 <- as.factor(ifelse(as.character(db.full$statistical.analysis.and.or.simulations)=="no",
                                                                       "no",
                                                                       "yes"))
@@ -180,7 +185,7 @@ table(db.full$bioinformatic.analysis)
 # Stat_analysis_software
 table(db.full$Stat_analysis_software)
 
-# standardizing terminology: first, substituting , by and
+# standardizing terminology: first, substituting ',' by 'and'
 db.full$Stat_analysis_software <- str_replace_all(db.full$Stat_analysis_software, ",", " and")
 
 # function obtained from: https://rstudio-pubs-static.s3.amazonaws.com/408658_512da947714740b99253228f084a08a9.html
@@ -248,7 +253,7 @@ table(db.full$CodePublished.2)
 # checking consistency in data collection. For those papers with some code published,
 # there should be data collected about the code 
 # summary(db.full[!(is.na(db.full$CodePublished.2)) & 
-#                   db.full$CodePublished.2=="yes",]) # found a couple of inconsistencies that are now be fixed
+#                   db.full$CodePublished.2=="yes",]) # found a couple of inconsistencies that are now fixed
 
 # db.full[!(is.na(db.full$CodePublished.2)) &
 #           db.full$CodePublished.2=="yes" &
