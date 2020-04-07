@@ -6,9 +6,9 @@ Antica Culina*, Ilona van den Berg, Simon Evans, Alfredo Sánchez-Tójar*. *Subm
 
 The supplementary information is available at: [supplementary information](https://asanchez-tojar.github.io/code_in_ecology/supporting_information.html)
 
-\*For any further information about the **code**, please contact: [Alfredo Sánchez-Tójar](https://scholar.google.co.uk/citations?hl=en&user=Sh-Rjq8AAAAJ&view_op=list_works&sortby=pubdate), email: alfredo.tojar@gmail.com. 
+\* For any further information about the **code**, please contact: [Alfredo Sánchez-Tójar](https://scholar.google.co.uk/citations?hl=en&user=Sh-Rjq8AAAAJ&view_op=list_works&sortby=pubdate), email: alfredo.tojar@gmail.com. 
 
-\*For any further information about the **data, materials or more generally, the study**, please contact [Antica Culina](https://scholar.google.com/citations?hl=en&user=9dgJnxEAAAAJ&view_op=list_works&sortby=pubdate), email: A.Culina@nioo.knaw.nl; and/or [Alfredo Sánchez-Tójar](https://scholar.google.co.uk/citations?hl=en&user=Sh-Rjq8AAAAJ&view_op=list_works&sortby=pubdate), email: alfredo.tojar@gmail.com.
+\* For any further information about the **data, materials or more generally, the study**, please contact [Antica Culina](https://scholar.google.com/citations?hl=en&user=9dgJnxEAAAAJ&view_op=list_works&sortby=pubdate), email: A.Culina@nioo.knaw.nl; and/or [Alfredo Sánchez-Tójar](https://scholar.google.co.uk/citations?hl=en&user=Sh-Rjq8AAAAJ&view_op=list_works&sortby=pubdate), email: alfredo.tojar@gmail.com.
 
 ## Information about scripts, folders and files within:
 
