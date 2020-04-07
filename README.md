@@ -53,4 +53,4 @@ For any further information about the **data, materials or more generally, the s
 
 ### Notes:
 
-See details of the licence of this repository in [LICENSE.txt](https://github.com/ASanchez-Tojar/meta-analysis_transgenerational_effects_commentary/blob/master/LICENSE.txt)
+See details of the licence of this repository in [LICENSE.txt](https://github.com/ASanchez-Tojar/code_in_ecology/blob/master/LICENSE.txt)
