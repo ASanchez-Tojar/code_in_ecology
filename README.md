@@ -24,16 +24,32 @@ For any further information about the **data, materials or more generally, the s
 [`plots`](https://github.com/ASanchez-Tojar/code_in_ecology/tree/master/plots): contains all three figures from this study. Figure 1 and 2 correspond to those included in the main manuscript, and Figure S1 is included in the supplementary information.
 
 [`screening_process`](https://github.com/ASanchez-Tojar/code_in_ecology/tree/master/screening_process): contains data for reproducing the literature search of 2018-2019. For the literature search of 2015-2016, no code was used (except the function `sample()` for ramdonly selecting articles, which was used for both years (code not available). This folder contains two subfolders:
+
 **1.** [`title-and-abstract_screening`](https://github.com/ASanchez-Tojar/code_in_ecology/tree/master/screening_process/title-and-abstract_screening): containing multiple files used for the title-and-abstract screening performed in [Rayyan](https://rayyan.qcri.org/).
   - `random_200_2018_2019.bib`: all 200 references reviewed for 2018-2019 in .bib format.
   - `random_200_2018_2019_rayyan.csv`: all 200 references reviewed for 2018-2019 in .csv format, with only the necessary information (variables) for importing into the title-and-abstract screening software ([Rayyan](https://rayyan.qcri.org/)). This file is the output of the script [`001_title-and-abstract_screening.R`](https://github.com/ASanchez-Tojar/code_in_ecology/blob/master/001_title-and-abstract_screening.R).
   - `random_200_2018_2019_rayyan_edited.csv`: same file as `random_200_2018_2019_rayyan.csv` after removing some quotation marks manually so that it can be imported into the title-and-abstract screening software ([Rayyan](https://rayyan.qcri.org/)). 
   - `rayyan_csv_example.csv`: template with the variables needed for importing into the the title-and-abstract screening software ([Rayyan](https://rayyan.qcri.org/)).
   - `screening_process_Rpackages_session.txt`: information about the R session (e.g. versions and packages used) used when running the script [`001_title-and-abstract_screening.R`](https://github.com/ASanchez-Tojar/code_in_ecology/blob/master/001_title-and-abstract_screening.R).
+
 **2.** [`fulltext_screening`](https://github.com/ASanchez-Tojar/code_in_ecology/tree/master/screening_process/fulltext_screening): containing multiple files used for the fulltext screening:
   - `instructions/Code_evaluation_template_v2.xlsx`: excel file used as template for choosing what variables to add.
   - `fulltext_screening_process_Rpackages_session.txt`: information about the R session (e.g. versions and packages used) used when running the script [`002_fulltext_screening.R`](https://github.com/ASanchez-Tojar/code_in_ecology/blob/master/002_fulltext_screening.R).
   - `random_200_2018_2019_rayyan_edited_t-and-a_decisions.csv`: .csv file extracted from [Rayyan](https://rayyan.qcri.org/) and containing the title-and-abstract decisions taken during the screening.
+
+`Culina_et_al.bib`: bibliography used in the supplementary information only.
+
+**Scripts**
+
+[`001_title-and-abstract_screening.R`](https://github.com/ASanchez-Tojar/code_in_ecology/blob/master/001_title-and-abstract_screening.R): R script used to format a reference dataset (.bib) so that it can be imported into [Rayyan](https://rayyan.qcri.org/) for title-and-abstract screening. 
+
+[`002_fulltext_screening.R`](https://github.com/ASanchez-Tojar/code_in_ecology/blob/master/002_fulltext_screening.R): R script used to subset a reference dataset after title-and-abstract screening was performed in using [Rayyan](https://rayyan.qcri.org/), and prepare the fulltext screening datasets.
+
+[`003_data_cleaning_and_standardization.R`](https://github.com/ASanchez-Tojar/code_in_ecology/blob/master/003_data_cleaning_and_standardization.R): R script used to import and clean the sheets with data extracted from the reviewed articles, and generate a final and clean data set (i.e. `code_availability_full_and_clean.csv`).
+
+[`004_plotting.R`](https://github.com/ASanchez-Tojar/code_in_ecology/blob/master/004_plotting.R): R script used to generate Figure 1 from the study.
+
+[`005_supporting_information.Rmd`](https://github.com/ASanchez-Tojar/code_in_ecology/blob/master/005_supporting_information.Rmd): Rmarkdown script used to generate the supplementary information file of this study (see [**here**](https://asanchez-tojar.github.io/code_in_ecology/supporting_information.html)).
 
 ### Notes:
 
