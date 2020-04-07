@@ -37,7 +37,7 @@ For any further information about the **data, materials or more generally, the s
   - `fulltext_screening_process_Rpackages_session.txt`: information about the R session (e.g. versions and packages used) used when running the script [`002_fulltext_screening.R`](https://github.com/ASanchez-Tojar/code_in_ecology/blob/master/002_fulltext_screening.R).
   - `random_200_2018_2019_rayyan_edited_t-and-a_decisions.csv`: .csv file extracted from [Rayyan](https://rayyan.qcri.org/) and containing the title-and-abstract decisions taken during the screening.
 
-`Culina_et_al.bib`: bibliography used in the supplementary information only.
+`Culina_et_al.bib`: bibliography used in the supplementary information file only.
 
 **Scripts**
 
