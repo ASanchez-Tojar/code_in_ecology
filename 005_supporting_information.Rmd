@@ -393,7 +393,7 @@ ggpar(figureS1,legend.title = "Code-sharing policy")
 
 ```
 
-**Figure S1**. Estimated percentage of code-sharing practices in the `r table(journal.policies$Require.computer.code.with.publication_2015)['Yes']` ecological journals reviewed, as of March 2020. Journals are grouped by the strength of the code-sharing policy, and numbers represent percentages.
+**Figure S2**. Estimated percentage of code-sharing practices in the `r table(journal.policies$Require.computer.code.with.publication_2015)['Yes']` ecological journals reviewed, as of March 2020. Journals are grouped by the strength of the code-sharing policy, and numbers represent percentages.
 
 ## R Session Information
 
