@@ -21,7 +21,7 @@ The supplementary information is available at: [supplementary information](https
 
 [`docs`](https://github.com/ASanchez-Tojar/code_in_ecology/tree/master/docs): contains the supplementary information file of this study. To visualize the html file, click [**here**](https://asanchez-tojar.github.io/code_in_ecology/supporting_information.html). 
 
-[`plots`](https://github.com/ASanchez-Tojar/code_in_ecology/tree/master/plots): contains all three figures from this study. Figure 1 and 2 correspond to those included in the main manuscript, and Figure S1 is included in the supplementary information.
+[`plots`](https://github.com/ASanchez-Tojar/code_in_ecology/tree/master/plots): contains all four figures from this study. Figure 1, 2 and 3 correspond to those included in the main manuscript, and Figure S1 is included in the supplementary information.
 
 [`screening_process`](https://github.com/ASanchez-Tojar/code_in_ecology/tree/master/screening_process): contains data for reproducing the literature search of 2018-2019. For the literature search of 2015-2016, no code was used (except the function `sample()` for ramdonly selecting articles, which was used for both years (code not available). This folder contains two subfolders:
 
@@ -47,7 +47,7 @@ The supplementary information is available at: [supplementary information](https
 
 [`003_data_cleaning_and_standardization.R`](https://github.com/ASanchez-Tojar/code_in_ecology/blob/master/003_data_cleaning_and_standardization.R): R script used to import and clean the sheets with data extracted from the reviewed articles, and generate a final and clean data set (i.e. `code_availability_full_and_clean.csv`).
 
-[`004_plotting.R`](https://github.com/ASanchez-Tojar/code_in_ecology/blob/master/004_plotting.R): R script used to generate Figure 1 from the study.
+[`004_plotting.R`](https://github.com/ASanchez-Tojar/code_in_ecology/blob/master/004_plotting.R): R script used to generate Figure 1 and 3 from the study.
 
 [`005_supporting_information.Rmd`](https://github.com/ASanchez-Tojar/code_in_ecology/blob/master/005_supporting_information.Rmd): Rmarkdown script used to generate the supplementary information file of this study (see [**here**](https://asanchez-tojar.github.io/code_in_ecology/supporting_information.html)).
 
