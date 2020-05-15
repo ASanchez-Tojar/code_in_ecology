@@ -11,7 +11,7 @@
 # Description of script and Instructions
 ###################################################################
 
-# This script is to create Figure 1 for the following study:
+# This script is to create Figure 1 and 3 for the following study:
 
 # Antica Culina, Ilona van den Berga, Simon Evans, Alfredo Sanchez-Tojar. 
 # Low availability of code in ecology: a call for urgent action.
@@ -33,6 +33,10 @@ rm(list=ls())
 
 # none
 
+
+##############################################################
+# Figure 1
+##############################################################
 
 ##############################################################
 # Importing data
@@ -276,9 +280,44 @@ figure1c <- full.location.summary %>%
         axis.title.x=element_blank())
 
 
-# exporting figure
+
+
+##############################################################
+# Figure 3
+##############################################################
+
 library(ggpubr)
 
+# import journal information and abbreviations
+journal.info <- read.table("data/journals_info_v2.csv",header=T,sep=",")
+full.journal <- read.table("data/journal_percentages.csv",header=T,sep=",")
+
+# merging journal info to percentages
+full.journal.info <- merge(full.journal,journal.info)
+
+# creating figure 3
+figure3 <- ggdotchart(full.journal.info, x = "abbreviations", y = "percentage",
+                       color = "Policy",
+                       palette = c("#00AFBB", "#E7B800", "#FC4E07"),
+                       sorting = "descending",
+                       add = "segments",
+                       rotate = TRUE,
+                       group = "Policy",
+                       xlab = "",
+                       ylab = "Percentage (%) of articles publishing some code",
+                       dot.size = 8,
+                       label = paste0(round(full.journal.info$codepublished,0),"/",round(full.journal.info$total,0)),
+                       font.label = list(color = "black", size = 7,vjust = 0.5),
+                       ggtheme = theme_pubr())
+
+figure3 <- ggpar(figure3,legend.title = "Code-sharing policy")
+
+
+##############################################################
+# Exporting figures
+##############################################################
+
+# exporting figure 1
 tiff("plots/Figure1.tiff",
      height=12, width=28,
      units='cm', compression="lzw", res=800)
@@ -289,3 +328,16 @@ ggarrange(figure1a, figure1b, figure1c,
           ncol = 3, nrow = 1)
 
 dev.off()
+
+# exporting figure 3
+ggexport(figure3,
+         plotlist = NULL,
+         filename = "plots/Figure3.tiff",
+         ncol = NULL,
+         nrow = NULL,
+         width = 2400,
+         height = 1450,
+         pointsize = 1,
+         res = 300,
+         verbose = TRUE
+)
