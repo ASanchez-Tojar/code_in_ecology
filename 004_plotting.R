@@ -110,7 +110,7 @@ figure1a <- full.summary %>%
                                         "All"))) %>% 
   ggplot() + 
   geom_bar(aes(y = percentage, x = Publication_year.2, fill = type), stat="identity",colour="black") +
-  labs(y="Percentage (%)", fill="Published code ") +
+  labs(y="Percentage (%) of articles", fill="Published code ") +
   scale_fill_manual(values=fill) +
   scale_y_continuous(breaks = seq(0,100,20),expand = expand_scale(mult = c(0, 0.05))) +
   theme(panel.grid.major = element_blank(), 
@@ -188,7 +188,7 @@ figure1b <- full.data.summary %>%
                                         "All"))) %>% 
   ggplot() + 
   geom_bar(aes(y = percentage, x = Publication_year.2, fill = type), stat="identity",colour="black") +
-  labs(y="Percentage (%)", fill="Published data ") +
+  labs(y="Percentage (%) of articles", fill="Published data ") +
   scale_fill_manual(values=fill) +
   scale_y_continuous(breaks = seq(0,100,20),expand = expand_scale(mult = c(0, 0.05))) +
   theme(panel.grid.major = element_blank(), 
@@ -266,7 +266,7 @@ figure1c <- full.location.summary %>%
                                         "Repository"))) %>% 
   ggplot() + 
   geom_bar(aes(y = percentage, x = Publication_year.2, fill = type), stat="identity",colour="black") +
-  labs(y="Percentage (%)", fill="Code location") +
+  labs(y="Percentage (%) of articles", fill="Code location") +
   scale_fill_manual(values=fill) +
   scale_y_continuous(breaks = seq(0,100,20),expand = expand_scale(mult = c(0, 0.05))) +
   theme(panel.grid.major = element_blank(), 
