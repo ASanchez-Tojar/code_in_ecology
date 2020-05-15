@@ -11,7 +11,7 @@
 # Description of script and Instructions
 ###################################################################
 
-# This script is to create Figure 1 and 3 for the following study:
+# This script is to create Figure 1 and 2 for the following study:
 
 # Antica Culina, Ilona van den Berga, Simon Evans, Alfredo Sanchez-Tojar. 
 # Low availability of code in ecology: a call for urgent action.
@@ -283,7 +283,7 @@ figure1c <- full.location.summary %>%
 
 
 ##############################################################
-# Figure 3
+# Figure 2
 ##############################################################
 
 library(ggpubr)
@@ -295,8 +295,8 @@ full.journal <- read.table("data/journal_percentages.csv",header=T,sep=",")
 # merging journal info to percentages
 full.journal.info <- merge(full.journal,journal.info)
 
-# creating figure 3
-figure3 <- ggdotchart(full.journal.info, x = "abbreviations", y = "percentage",
+# creating figure 2
+figure2 <- ggdotchart(full.journal.info, x = "abbreviations", y = "percentage",
                        color = "Policy",
                        palette = c("#00AFBB", "#E7B800", "#FC4E07"),
                        sorting = "descending",
@@ -310,7 +310,7 @@ figure3 <- ggdotchart(full.journal.info, x = "abbreviations", y = "percentage",
                        font.label = list(color = "black", size = 7,vjust = 0.5),
                        ggtheme = theme_pubr())
 
-figure3 <- ggpar(figure3,legend.title = "Code-sharing policy")
+figure2 <- ggpar(figure2,legend.title = "Code-sharing policy")
 
 
 ##############################################################
@@ -329,10 +329,10 @@ ggarrange(figure1a, figure1b, figure1c,
 
 dev.off()
 
-# exporting figure 3
-ggexport(figure3,
+# exporting figure 2
+ggexport(figure2,
          plotlist = NULL,
-         filename = "plots/Figure3.tiff",
+         filename = "plots/Figure2.tiff",
          ncol = NULL,
          nrow = NULL,
          width = 2400,
