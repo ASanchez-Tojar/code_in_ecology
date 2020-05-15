@@ -329,14 +329,25 @@ table(db.full[db.full$Publication_year.2=="2018-2019","Location_CodeMentioned"])
 # LocationShared
 table(db.full$LocationShared)
 
-# creating new, recoded variable
+# creating a new level after suggestion of reviewer #2. This new level is "version control online repository"
+# for those codes only hosted in GitHub
+db.full$LocationShared <- as.character(db.full$LocationShared)
+db.full[(db.full$Repository=="Github" | db.full$Repository=="GitHub") & !(is.na(db.full$Repository)) ,"LocationShared"] <- "version control platform"
+db.full$LocationShared <- as.factor(db.full$LocationShared)
+
+table(db.full$LocationShared)
+
+# creating new, recoded variable. We are however still considering GitHub as a repository for the figure
+# to make things simpler but we specify the difference in the main text.
 db.full$LocationShared.2 <- recode(db.full$LocationShared,
                                    "link in the article" = "supplementary file",
                                    "repository and supplementary file" = "repository",
+                                   "version control platform" = "repository",
                                    "webpage (govermental)" = "webpage",
                                    .default = levels(db.full$LocationShared))
 
 table(db.full$LocationShared.2)
+
 table(db.full[db.full$Publication_year.2=="2015-2016","LocationShared.2"])
 table(db.full[db.full$Publication_year.2=="2018-2019","LocationShared.2"])
 
