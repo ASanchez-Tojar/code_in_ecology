@@ -362,7 +362,7 @@ tableS2 %>% kable("html") %>% kable_styling() %>% scroll_box(width = "100%", hei
 
 ### 2.2 - Journals' code-sharing compliance
 
-**Table S3**. List of `r table(journal.policies$Require.computer.code.with.publication_2015)['Yes']` ecological journals reviewed in this study and their code-sharing policies (updated in March 2020), number of articles we reviewed, number of articles sharing at least some code, and the percentage of articles sharing at least some code (see also Figure 3 in the main text).
+**Table S3**. List of `r table(journal.policies$Require.computer.code.with.publication_2015)['Yes']` ecological journals reviewed in this study and their code-sharing policies (updated in March 2020), number of articles we reviewed, number of articles sharing at least some code, and the percentage of articles sharing at least some code (see also Figure 2 in the main text).
 ```{r}
 # import journal information and abbreviations
 journal.info <- read.table("data/journals_info_v2.csv",header=T,sep=",")
