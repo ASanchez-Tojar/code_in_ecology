@@ -198,8 +198,11 @@ code.mentioned.section.dataacc.methods <- as.numeric(sum(table(data.full$Locatio
 code.mentioned.section.supplements <- as.numeric(sum(table(data.full$Location_CodeMentioned)["supplement"],
                                                      table(data.full$Location_CodeMentioned)["supplementary files descriptions"]))
 
-# number of articles using repositories to host their data
-code.hosted.repository <- as.numeric(table(data.full$LocationShared.2)["repository"])
+# number of articles using permanent repositories to host their data
+code.hosted.repository <- as.numeric(table(data.full$LocationShared.2)["repository"])-as.numeric(table(data.full$LocationShared)["version control platform"])
+
+# number of articles using only non-permanent repositories (i.e. version controlled  plaform = GitHub)to host their data
+code.hosted.github.only <- as.numeric(table(data.full$LocationShared)["version control platform"])
 
 # number of articles using repositories to host their data in 2015/2016
 code.hosted.repository.2015.16 <- as.numeric(table(data.full[data.full$Publication_year<2018,"LocationShared.2"])["repository"])
@@ -249,7 +252,8 @@ all.names <- c("articles sharing at least some code",
                "articles sharing at least some code and highlighting code availability in data accessibility and/or methods section",
                "articles sharing at least some code and highlighting code availability only in the supplements",
                "articles sharing at least some code and not highlighting code availability",
-               "articles sharing at least some code and hosting it in a repository",
+               "articles sharing at least some code and hosting it in a permanent repository",
+               "articles sharing at least some code and hosting it in GitHub only",
                "articles sharing at least some code and hosting it only in the supplements",
                "articles sharing at least some code and hosting it in a repository in 2015/2016",
                "articles sharing at least some code and hosting it in a repository in 2018/2019",
@@ -280,6 +284,7 @@ all.percentages <- round(
     (code.mentioned.section.supplements/code.mentioned)*100,
     (code.not.mentioned/at.least.some.code)*100,
     (code.hosted.repository/at.least.some.code)*100,
+    (code.hosted.github.only/at.least.some.code)*100,
     (code.hosted.supplements/at.least.some.code)*100,
     (code.hosted.repository.2015.16/at.least.some.code.year$code_published[1])*100,
     (code.hosted.repository.2018.19/at.least.some.code.year$code_published[2])*100,
@@ -309,9 +314,10 @@ all.numerators <- c("#eligible articles sharing at least some code",
                     "#eligible articles sharing at least some code that highlighted code availability only in the supplements",
                     "#eligible articles sharing at least some code that did not highlighted code availability",
                     "#eligible articles sharing at least some code and hosting it in a repository",
+                    "#eligible articles sharing at least some code and hosting it in GitHub only",
                     "#eligible articles sharing at least some code and hosting it only in the supplements",
-                    "#eligible articles sharing at least some code and hosting it in a repository in 2015/2016",
-                    "#eligible articles sharing at least some code and hosting it in a repository in 2018/2019",
+                    "#eligible articles sharing at least some code and hosting it in a repository or GitHub only in 2015/2016",
+                    "#eligible articles sharing at least some code and hosting it in a repository or GitHub only in 2018/2019",
                     "#eligible articles sharing seemingly all code and data (if any used)",
                     "#eligible articles with the potential to be computationally reproducible in 2015/2016",
                     "#eligible articles with the potential to be computationally reproducible in 2018/2019",
@@ -336,6 +342,7 @@ all.denominators <- c("#eligible articles",
                       "#eligible articles sharing at least some code that highlighted code availability",
                       "#eligible articles sharing at least some code that highlighted code availability",
                       "#eligible articles sharing at least some code that highlighted code availability",
+                      "#eligible articles sharing at least some code",
                       "#eligible articles sharing at least some code",
                       "#eligible articles sharing at least some code",
                       "#eligible articles sharing at least some code",
