@@ -37,7 +37,13 @@ rm(list=ls())
 # Functions needed
 ##############################################################
 
-# none
+# function obtained from: https://rstudio-pubs-static.s3.amazonaws.com/408658_512da947714740b99253228f084a08a9.html
+# this function makes the first letter of a word capital to keep everything tidy and consistent
+CapStr <- function(y) {
+  c <- strsplit(y, " ")[[1]]
+  paste(toupper(substring(c, 1,1)), substring(c, 2),
+        sep="", collapse=" ")
+}
 
 
 ##############################################################
@@ -188,14 +194,7 @@ table(db.full$Stat_analysis_software)
 # standardizing terminology: first, substituting ',' by 'and'
 db.full$Stat_analysis_software <- str_replace_all(db.full$Stat_analysis_software, ",", " and")
 
-# function obtained from: https://rstudio-pubs-static.s3.amazonaws.com/408658_512da947714740b99253228f084a08a9.html
-# this function makes the first letter of a word capital to keep everything tidy and consistent
-CapStr <- function(y) {
-  c <- strsplit(y, " ")[[1]]
-  paste(toupper(substring(c, 1,1)), substring(c, 2),
-        sep="", collapse=" ")
-}
-
+# making the first letter of a word capital to keep everything tidy and consistent
 db.full$Stat_analysis_software <- sapply(as.character(db.full$Stat_analysis_software), CapStr)
 
 # reformatting NA's

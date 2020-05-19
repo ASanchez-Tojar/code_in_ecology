@@ -224,13 +224,13 @@ R.only <- nrow(data.full[data.full$Stat_analysis_software=="R" & !(is.na(data.fu
 
 # number of articles reporting the software used
 eligible.articles.code.reporting.software.used <- as.numeric(data.full %>% 
-                                       filter(!(is.na(statistical.analysis.and.or.simulations.2))) %>% 
-                                       summarise(eligible_articles = sum(statistical.analysis.and.or.simulations.2 == "yes" & Stat_analysis_software != "Not Stated")))
+                                                               filter(!(is.na(statistical.analysis.and.or.simulations.2))) %>% 
+                                                               summarise(eligible_articles = sum(statistical.analysis.and.or.simulations.2 == "yes" & Stat_analysis_software != "Not Stated")))
 
 # number of articles reporting the software used
 eligible.articles.code.not.reporting.software.used <- as.numeric(data.full %>% 
-                                       filter(!(is.na(statistical.analysis.and.or.simulations.2))) %>% 
-                                       summarise(eligible_articles = sum(statistical.analysis.and.or.simulations.2 == "yes" & Stat_analysis_software == "Not Stated")))
+                                                                   filter(!(is.na(statistical.analysis.and.or.simulations.2))) %>% 
+                                                                   summarise(eligible_articles = sum(statistical.analysis.and.or.simulations.2 == "yes" & Stat_analysis_software == "Not Stated")))
 
 # creating vectors to build the data frame with
 
@@ -377,8 +377,22 @@ journal.info <- read.table("data/journals_info_v2.csv",header=T,sep=",")
 # merging journal info to percentages
 full.journal.info <- merge(full.journal,journal.info)
 
+# removing full capitalization of journal names using the following function
+# which was obtained from: https://stackoverflow.com/questions/6364783/capitalize-the-first-letter-of-both-words-in-a-two-word-string
+simpleCap <- function(x) {
+  s <- strsplit(x, " ")[[1]]
+  paste(toupper(substring(s, 1,1)), substring(s, 2),
+        sep="", collapse=" ")
+}
+
+full.journal.info$Journal<- sapply(tolower(full.journal.info$Journal),simpleCap)
+
+full.journal.info$Journal <- ifelse(full.journal.info$Journal=="Proceedings Of The Royal Society B-biological Sciences",
+                                    "Proceedings Of The Royal Society B-Biological Sciences",
+                                    full.journal.info$Journal)
+
 # printing table S3
-full.journal.info %>% select(abbreviations,Policy,total,codepublished,percentage) %>% rename(Journal=abbreviations,'Code-sharing policy'=Policy,'#articles reviewed'=total,'#articles sharing code'=codepublished, '% articles sharing code'=percentage) %>% arrange(Journal) %>% kable("html") %>% kable_styling() %>% scroll_box(width = "100%", height = "500px")
+full.journal.info %>% select(Journal,Policy,total,codepublished,percentage) %>% rename('Code-sharing policy'=Policy,'#articles reviewed'=total,'#articles sharing code'=codepublished, '% articles sharing code'=percentage) %>% arrange(Journal) %>% kable("html") %>% kable_styling() %>% scroll_box(width = "100%", height = "500px")
 ```
 
 ## R Session Information
