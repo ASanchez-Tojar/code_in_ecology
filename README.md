@@ -1,3 +1,5 @@
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.3833928.svg)](https://doi.org/10.5281/zenodo.3833928)
+
 # Code in Ecology
 
 This repository contains the data, code and other materials used in the following study:
