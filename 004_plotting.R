@@ -121,6 +121,9 @@ figure1a <- full.summary %>%
         panel.grid.minor = element_blank(),
         panel.background = element_blank(),
         axis.line = element_line(colour = "black"),
+        axis.text.x = element_text(size = 10),
+        axis.text.y = element_text(size = 10),
+        axis.title.y = element_text(size = 14),
         axis.title.x=element_blank())
 
 
@@ -199,6 +202,9 @@ figure1b <- full.data.summary %>%
         panel.grid.minor = element_blank(),
         panel.background = element_blank(),
         axis.line = element_line(colour = "black"),
+        axis.text.x = element_text(size = 10),
+        axis.text.y = element_text(size = 10),
+        axis.title.y = element_text(size = 14),
         axis.title.x=element_blank())
 
 
@@ -277,6 +283,9 @@ figure1c <- full.location.summary %>%
         panel.grid.minor = element_blank(),
         panel.background = element_blank(),
         axis.line = element_line(colour = "black"),
+        axis.text.x = element_text(size = 10),
+        axis.text.y = element_text(size = 10),
+        axis.title.y = element_text(size = 14),
         axis.title.x=element_blank())
 
 
@@ -320,7 +329,7 @@ figure2 <- ggpar(figure2,legend.title = "Code-sharing policy")
 # exporting figure 1
 tiff("plots/Figure1.tiff",
      height=12, width=28,
-     units='cm', compression="lzw", res=800)
+     units='cm', compression="lzw", res=600)
 
 # multipannel plot
 ggarrange(figure1a, figure1b, figure1c,
