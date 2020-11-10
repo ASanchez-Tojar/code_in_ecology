@@ -4,7 +4,11 @@
 
 This repository contains the data, code and other materials used in the following study:
 
-Antica Culina*, Ilona van den Berg, Simon Evans, Alfredo Sánchez-Tójar*. *Submitted*. **Low availability of code in ecology: a call for urgent action.**
+---
+
+Antica Culina*, Ilona van den Berg, Simon Evans, Alfredo Sánchez-Tójar*. 2020. *Low availability of code in ecology: a call for urgent action*. PLoS Biology, 18(7): e3000763. DOI: [10.1371/journal.pbio.3000763](https://doi.org/10.1371/journal.pbio.3000763)
+
+---
 
 The supplementary information is available at: [supplementary information](https://asanchez-tojar.github.io/code_in_ecology/supporting_information.html)
 
